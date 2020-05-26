@@ -1,3 +1,60 @@
 body {
-    background-color: lightgray;
+    background-color: #fff;
+    color: #111;
+    font-family: Inter, Helvetica Neue, Helvetica, sans-serif;
+}
+
+.wrap {
+    padding: 0 1rem;
+    margin: 1rem auto;
+    max-width: 800px;
+}
+
+.form label {
+    display: block;
+    font-weight: 600;
+    padding-bottom: .5rem;
+    padding-top: 1rem;
+}
+
+.form-checkbox input[type=checkbox] {
+    margin-left: 0;
+}
+
+.form div:not(.form-checkbox) > label {
+    color: #555;
+    font-size: .85rem;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+@supports (display: flex) {
+    .form-checkbox {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        margin-top: 1rem;
+    }
+
+    .form-checkbox input[type=checkbox] {
+        margin-right: .5rem;
+        order: 0;
+    }
+
+    .form-checkbox label {
+        font-weight: normal;
+        padding-bottom: 0;
+        padding-top: 0;
+        order: 1;
+    }
+}
+
+.form input[type=text],
+.form input[type=email],
+.form input[type=password] {
+    width: 100%;
+}
+
+.form .btn[type=submit] {
+    margin-top: 1rem;
 }
