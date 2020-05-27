@@ -1,6 +1,13 @@
 import React from 'react';
+import { QueuedFile } from './UploadTypes';
 
-export default function UploadQueue({ queue }) {
+type UploadQueueProps = { queue: QueuedFile[] };
+
+const UploadQueue: React.FC<UploadQueueProps> = ({ queue }) => {
+    if (queue.length === 0) {
+        return <></>;
+    }
+
     return (
         <div className="upload-queue">
             <div className="upload-queue-heading">Upload queue</div>
@@ -11,11 +18,8 @@ export default function UploadQueue({ queue }) {
                     </div>
                 ))}
             </div>
-            {queue.length === 0 ? (
-                <div className="upload-queue-empty">
-                    Queue is empty.
-                </div>
-            ) : null}
         </div>
     );
-}
+};
+
+export default UploadQueue;

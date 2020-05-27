@@ -1,9 +1,10 @@
-.upload-view {
+.upload-queue {
     margin-top: 1rem;
 }
 
 .upload-queue-heading {
     color: #555;
+    font-size: .85rem;
     font-weight: 500;
     letter-spacing: .5px;
     margin-bottom: .5rem;

@@ -3,6 +3,8 @@
         "@symfony/webpack-encore": "^0.30.0",
         "core-js": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
+        "ts-loader": "^5.4.5",
+        "typescript": "^3.9.3",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -15,6 +17,9 @@
     },
     "dependencies": {
         "@babel/preset-react": "^7.10.0",
+        "@types/event-kit": "^2.4.0",
+        "@types/react": "^16.9.35",
+        "@types/react-dom": "^16.9.8",
         "event-kit": "^2.5.3",
         "jquery": "^3.5.1",
         "react": "^16.13.1",

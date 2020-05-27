@@ -1,5 +1,5 @@
-export function generateUniqueID() {
-    const values = new Uint8Array(16);
+export function generateRandomId(): string {
+    const values: Uint8Array = new Uint8Array(16);
     crypto.getRandomValues(values);
 
     return Array.from(values)
