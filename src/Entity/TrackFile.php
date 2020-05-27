@@ -14,16 +14,10 @@ use Symfony\Component\Form\Exception\LogicException;
 class TrackFile
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id;
-
-    /**
+     * @ORM\Id
      * @ORM\Column(type="uuid")
      */
-    private UuidInterface $uuid;
+    private UuidInterface $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,21 +34,21 @@ class TrackFile
      */
     private TrackMetadata $metadata;
 
-    public function __construct(string $name, UuidInterface $uuid)
+    public function __construct(UuidInterface $id, string $name)
     {
+        $this->id = $id;
         $this->name = $name;
-        $this->uuid = $uuid;
         $this->metadata = new TrackMetadata();
     }
 
-    public function getId(): ?int
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
 
     public function getUuid(): UuidInterface
     {
-        return $this->uuid;
+        return $this->id;
     }
 
     public function getName(): ?string

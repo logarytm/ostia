@@ -35,6 +35,6 @@ class TrackAudioStorage
 
     private function getAudioFilePath(Track $track): string
     {
-        return sprintf('%s/%d', $this->persistentDir, $track->getId());
+        return sprintf('%s/%s', $this->persistentDir, $track->getId()->toString());
     }
 }

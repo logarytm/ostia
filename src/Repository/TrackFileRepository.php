@@ -28,14 +28,13 @@ class TrackFileRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param UuidInterface[] $uuids
      * @return TrackFile[]
      */
-    public function getByUuids(array $uuids): array
+    public function getByIds(UuidInterface ...$ids): array
     {
         return $this->_em
-            ->createQuery('SELECT tf FROM App\Entity\TrackFile tf WHERE tf.uuid IN (:uuids)')
-            ->setParameter(':uuids', $uuids)
+            ->createQuery('SELECT tf FROM App\Entity\TrackFile tf WHERE tf.id IN (:ids)')
+            ->setParameter(':ids', $ids)
             ->getResult();
     }
 
@@ -45,13 +44,13 @@ class TrackFileRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
-    public function getByUuid(UuidInterface $uuid): TrackFile
+    public function getById(UuidInterface $id): TrackFile
     {
-        $trackFile = $this->findOneBy(['uuid' => $uuid]);
+        $trackFile = $this->findOneBy(['id' => $id]);
         if ($trackFile === null) {
             throw new TrackFileNotFoundException(sprintf(
                 'Track with UUID %s not found.',
-                $uuid
+                $id
             ));
         }
 

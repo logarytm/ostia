@@ -81,7 +81,7 @@ class Playlist
     {
         if (!$this->tracks->contains($track)) {
             $this->tracks[] = $track;
-            $track->addPlaylist($this);
+            $track->addToPlaylist($this);
         }
 
         return $this;
@@ -91,7 +91,7 @@ class Playlist
     {
         if ($this->tracks->contains($track)) {
             $this->tracks->removeElement($track);
-            $track->removePlaylist($this);
+            $track->removeFromPlaylist($this);
         }
 
         return $this;

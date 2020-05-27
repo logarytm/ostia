@@ -6,15 +6,16 @@ namespace App\ViewModel;
 
 use App\Entity\Duration;
 use App\Entity\Track;
+use Ramsey\Uuid\UuidInterface;
 
 final class TrackListItem
 {
-    private int $id;
+    private UuidInterface $id;
     private string $title;
     private Duration $duration;
 
     public function __construct(
-        int $id,
+        UuidInterface $id,
         string $title,
         Duration $duration
     ) {
@@ -32,7 +33,7 @@ final class TrackListItem
         );
     }
 
-    public function getId(): int
+    public function getId(): UuidInterface
     {
         return $this->id;
     }

@@ -10,12 +10,12 @@ final class PrepareTrackFile
 {
     private UuidInterface $trackFileUuid;
 
-    public function __construct(UuidInterface $trackFileUuid)
+    public function __construct(UuidInterface $trackFileId)
     {
-        $this->trackFileUuid = $trackFileUuid;
+        $this->trackFileUuid = $trackFileId;
     }
 
-    public function getTrackFileUuid(): UuidInterface
+    public function getTrackFileId(): UuidInterface
     {
         return $this->trackFileUuid;
     }

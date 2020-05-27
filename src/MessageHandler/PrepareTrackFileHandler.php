@@ -10,7 +10,6 @@ use App\Exception\TrackFileNotFoundException;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackFileRepository;
 use App\Track\TrackAudioStorage;
-use DateInterval;
 use FFMpeg\FFProbe;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -31,11 +30,11 @@ final class PrepareTrackFileHandler implements MessageHandlerInterface
     public function __invoke(PrepareTrackFile $message)
     {
         try {
-            $trackFile = $this->trackFiles->getByUuid($message->getTrackFileUuid());
+            $trackFile = $this->trackFiles->getById($message->getTrackFileId());
             $this->computeDuration($trackFile);
         } catch (TrackFileNotFoundException $e) {
             $this->logger->warning('Track with UUID {uuid} not found.', [
-                'uuid' => $message->getTrackFileUuid()->toString(),
+                'uuid' => $message->getTrackFileId()->toString(),
             ]);
         }
     }

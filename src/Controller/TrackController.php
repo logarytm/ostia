@@ -11,7 +11,7 @@ use App\Repository\TrackFileRepository;
 use App\Repository\TrackRepository;
 use App\Track\TrackAudioStorage;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Filesystem\Filesystem;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
+ */
 final class TrackController extends AbstractController
 {
     private TrackRepository $tracks;
@@ -65,7 +68,7 @@ final class TrackController extends AbstractController
 
         $uploadedFile->move($this->getParameter('app.temporary_dir'), $uuid->toString());
 
-        $trackFile = new TrackFile($uploadedFile->getClientOriginalName(), $uuid);
+        $trackFile = new TrackFile($uuid, $uploadedFile->getClientOriginalName());
         $this->trackFiles->add($trackFile);
         $bus->dispatch(new PrepareTrackFile($uuid));
 
@@ -78,8 +81,7 @@ final class TrackController extends AbstractController
     public function tags(Request $request): Response
     {
         $uuids = $this->getUuidsFromQuery($request);
-
-        $trackFiles = $this->trackFiles->getByUuids($uuids);
+        $trackFiles = $this->trackFiles->getByIds(...$uuids);
 
         return $this->render('track/tags.html.twig', ['track_files_json' => $this->buildTrackFileJson($trackFiles)]);
     }
@@ -89,9 +91,9 @@ final class TrackController extends AbstractController
      */
     public function addToLibrary(Request $request): Response
     {
-        $uuid = Uuid::fromString($request->request->get('uuid'));
+        $id = Uuid::fromString($request->request->get('uuid'));
+        $trackFile = $this->trackFiles->getById($id);
 
-        $trackFile = $this->trackFiles->findOneBy(['uuid' => $uuid]);
         if (!$trackFile) {
             return $this->badRequest('not_found', 'Uploaded file not found');
         }
@@ -101,6 +103,7 @@ final class TrackController extends AbstractController
         }
 
         $track = new Track(
+            Uuid::uuid4(),
             $this->user(),
             pathinfo($trackFile->getName(), PATHINFO_BASENAME),
             $trackFile->getDuration()

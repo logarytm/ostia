@@ -6,6 +6,7 @@ use App\Repository\TrackRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Entity(repositoryClass=TrackRepository::class)
@@ -13,40 +14,40 @@ use Doctrine\ORM\Mapping as ORM;
 class Track
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\Column(type="uuid")
      */
-    private $id;
+    private UuidInterface $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $title;
+    private string $title;
 
     /**
      * @ORM\Column(type="duration")
      */
-    private $duration;
+    private Duration $duration;
 
     /**
      * @ORM\ManyToMany(targetEntity=Playlist::class, inversedBy="tracks")
      */
-    private $playlists;
+    private Collection $playlists;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tracks")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private User $user;
 
     /**
      * @ORM\Embedded(class=TrackMetadata::class)
      */
-    private $metadata;
+    private TrackMetadata $metadata;
 
-    public function __construct(User $user, string $title, Duration $duration)
+    public function __construct(UuidInterface $id, User $user, string $title, Duration $duration)
     {
+        $this->id = $id;
         $this->user = $user;
         $this->title = $title;
         $this->duration = $duration;
@@ -54,7 +55,7 @@ class Track
         $this->metadata = new TrackMetadata();
     }
 
-    public function getId(): ?int
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
@@ -76,15 +77,7 @@ class Track
         return $this->duration;
     }
 
-    /**
-     * @return Collection|Playlist[]
-     */
-    public function getPlaylists(): Collection
-    {
-        return $this->playlists;
-    }
-
-    public function addPlaylist(Playlist $playlist): self
+    public function addToPlaylist(Playlist $playlist): self
     {
         if (!$this->playlists->contains($playlist)) {
             $this->playlists[] = $playlist;
@@ -93,7 +86,7 @@ class Track
         return $this;
     }
 
-    public function removePlaylist(Playlist $playlist): self
+    public function removeFromPlaylist(Playlist $playlist): self
     {
         if ($this->playlists->contains($playlist)) {
             $this->playlists->removeElement($playlist);
@@ -102,15 +95,8 @@ class Track
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
     }
 }
