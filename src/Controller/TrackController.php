@@ -20,11 +20,10 @@ final class TrackController extends AbstractController
     }
 
     /**
-     * @Route("/tracks/upload_file", methods={"POST"})
+     * @Route("/tracks/upload", methods={"POST"})
      */
-    public function uploadFile(Request $request): Response
+    public function upload(Request $request): Response
     {
-        if ($request->files->has('file')) {
-        }
+        dd($request->files);
     }
 }

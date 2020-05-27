@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import generateRandomId from './generateRandomId';
-import { QueuedFile, UploadEmitter } from './UploadTypes';
+import { UploadedFile, UploadEmitter } from './UploadTypes';
 import { map } from '../util/array';
 
 const FILE_FIELD = 'file';
@@ -12,17 +12,12 @@ const UploadForm: React.FC<{ emitter: UploadEmitter }> = ({ emitter }) => {
             const formData = new FormData();
             formData.append(FILE_FIELD, file);
 
-            const fileToQueue: QueuedFile = {
+            return new UploadedFile(
                 formData,
-                id: generateRandomId(),
-                name: file.name,
-                size: file.size,
-                uploaded: 0,
-                percent: 0,
-                success: false,
-            };
-
-            return fileToQueue;
+                generateRandomId(),
+                file.name,
+                file.size
+            );
         }
 
         const files = map(e.target.files!, toQueuedFile);
