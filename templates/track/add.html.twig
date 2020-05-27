@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% trans %}Upload a track{% endtrans %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="wrap">
+        <h1>Add tracks</h1>
+
+        <noscript>
+            <div class="error">
+                Uploading tracks requires JavaScript.
+            </div>
+        </noscript>
+
+        <form class="form">
+            <div>
+                <label for="files">{% trans %}Files{% endtrans %}</label>
+                <input type="file" name="files" id="files" required multiple>
+            </div>
+            <button class="btn" type="submit">{% trans %}Upload{% endtrans %}</button>
+        </form>
+
+        <div id="react-content"></div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('upload') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('upload') }}
+{% endblock %}

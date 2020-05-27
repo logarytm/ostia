@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 : "${PHP:=php}" "${BIND:=0.0.0.0}" "${PORT:=8000}"
 cd "$(dirname "$0")/.." || exit
-"$PHP" -S "$BIND:$PORT" -t public/ server.php
+"$PHP" -d upload_max_filesize=2G -d post_max_size=2G -S "$BIND:$PORT" -t public/ server.php
