@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { generateRandomId } from './generateRandomId';
+import generateRandomId from './generateRandomId';
 import { QueuedFile, UploadEmitter } from './UploadTypes';
 import { map } from '../util/array';
 

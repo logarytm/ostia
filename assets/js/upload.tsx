@@ -8,18 +8,6 @@ import UploadQueue from './upload/UploadQueue';
 import UploadForm from './upload/UploadForm';
 import { QueuedFile, UploadEmissions, UploadEmitter } from './upload/UploadTypes';
 
-function toReadableSize(bytes: number) {
-    const precision = 2;
-
-    if (bytes > 1024 * 1024) {
-        return (bytes / 1024 / 1024).toFixed(precision) + ' MiB';
-    } else if (bytes > 1024) {
-        return (bytes / 1024).toFixed(precision) + ' KiB';
-    }
-
-    return bytes + ' B';
-}
-
 type UploadViewState = { queue: QueuedFile[] };
 
 class UploadView extends React.Component<{}, UploadViewState> {
