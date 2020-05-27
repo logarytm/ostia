@@ -12,9 +12,12 @@
 }
 
 .upload-queue-empty {
-    background: #eee;
+    border: 1px #bbb solid;
     border-radius: 4px;
+    color: #555;
+    font-weight: 500;
     padding: 1rem;
+    text-align: center;
 }
 
 .upload-queue-item {

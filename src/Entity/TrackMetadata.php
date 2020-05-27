@@ -24,12 +24,12 @@ class TrackMetadata
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    public ?string $album;
+    public ?array $albumArtists;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    public ?array $albumArtists;
+    public ?string $album;
 
     /**
      * @ORM\Column(type="integer", nullable=true)

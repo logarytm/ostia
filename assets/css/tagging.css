@@ -31,7 +31,6 @@
     color: #888;
     content: 'File: ';
     margin-right: .2rem;
-    /*font-weight: 500;*/
 }
 
 .tagging-track:last-child {

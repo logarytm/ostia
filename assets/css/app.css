@@ -123,3 +123,12 @@ select::-moz-focus-outer {
     border: 0;
     outline: none;
 }
+
+.help {
+    background-color: aliceblue;
+    color: midnightblue;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    border: 1px lightblue solid;
+}

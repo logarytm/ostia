@@ -7,33 +7,34 @@
 {% block body %}
     <div class="wrap">
         <h1>{% trans %}Tag your tracks{% endtrans %}</h1>
-        <form class="tagging-view form" method="post">
-            {% for track_file in track_files %}
-                <div class="tagging-track">
-                    <div class="tagging-track-name">
-                        {{ track_file.name }}
-                    </div>
-                    <div class="tagging-track-metadata">
-                        <div class="tagging-track-metadata-row">
-                            <div class="tagging-track-metadata-field">
-                                <label for="{{ track_file.uuid }}_title">{% trans %}Title{% endtrans %}</label>
-                                <input type="text" name="{{ track_file.uuid }}_title" id="{{ track_file.uuid }}_title">
-                            </div>
-                            <div class="tagging-track-metadata-field">
-                                <label for="{{ track_file.uuid }}_artist">{% trans %}Artist{% endtrans %}</label>
-                                <input type="text" name="{{ track_file.uuid }}_artist" id="{{ track_file.uuid }}_artist">
-                            </div>
-                        </div>
-                        <div class="tagging-track-metadata-row">
-                            <div class="tagging-track-metadata-field">
-                                <label for="{{ track_file.uuid }}_album">{% trans %}album{% endtrans %}</label>
-                                <input type="text" name="{{ track_file.uuid }}_album" id="{{ track_file.uuid }}_album">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </form>
+        <div id="react-content"></div>
+        {#        <form class="tagging-view form" method="post">#}
+        {#            {% for track_file in track_files %}#}
+        {#                <div class="tagging-track">#}
+        {#                    <div class="tagging-track-name">#}
+        {#                        {{ track_file.name }}#}
+        {#                    </div>#}
+        {#                    <div class="tagging-track-metadata">#}
+        {#                        <div class="tagging-track-metadata-row">#}
+        {#                            <div class="tagging-track-metadata-field">#}
+        {#                                <label for="{{ track_file.uuid }}_title">{% trans %}Title{% endtrans %}</label>#}
+        {#                                <input type="text" name="{{ track_file.uuid }}_title" id="{{ track_file.uuid }}_title">#}
+        {#                            </div>#}
+        {#                            <div class="tagging-track-metadata-field">#}
+        {#                                <label for="{{ track_file.uuid }}_artist">{% trans %}Artist{% endtrans %}</label>#}
+        {#                                <input type="text" name="{{ track_file.uuid }}_artist" id="{{ track_file.uuid }}_artist">#}
+        {#                            </div>#}
+        {#                        </div>#}
+        {#                        <div class="tagging-track-metadata-row">#}
+        {#                            <div class="tagging-track-metadata-field">#}
+        {#                                <label for="{{ track_file.uuid }}_album">{% trans %}album{% endtrans %}</label>#}
+        {#                                <input type="text" name="{{ track_file.uuid }}_album" id="{{ track_file.uuid }}_album">#}
+        {#                            </div>#}
+        {#                        </div>#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            {% endfor %}#}
+        {#        </form>#}
     </div>
 {% endblock %}
 
@@ -44,5 +45,10 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        {% autoescape 'js' %}
+            window.__trackFiles = {{ track_files_json|raw }};
+        {% endautoescape %}
+    </script>
     {{ encore_entry_script_tags('tagging') }}
 {% endblock %}

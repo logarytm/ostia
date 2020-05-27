@@ -78,7 +78,7 @@ final class TrackController extends AbstractController
 
         $trackFiles = $this->trackFiles->getByUuids($uuids);
 
-        return $this->render('track/tags.html.twig', ['track_files' => $trackFiles]);
+        return $this->render('track/tags.html.twig', ['track_files_json' => $this->buildTrackFileJson($trackFiles)]);
     }
 
     private function badRequest(string $reason, string $message): JsonResponse
@@ -87,5 +87,24 @@ final class TrackController extends AbstractController
             'reason' => $reason,
             'message' => $message,
         ], 400);
+    }
+
+    /** @param TrackFile[] $trackFiles */
+    private function buildTrackFileJson(array $trackFiles): string
+    {
+        $result = [];
+
+        foreach ($trackFiles as $trackFile) {
+            $result[] = [
+                'name' => $trackFile->getName(),
+                'title' => $trackFile->getMetadata()->title,
+                'artists' => $trackFile->getMetadata()->artists,
+                'albumArtists' => $trackFile->getMetadata()->albumArtists,
+                'album' => $trackFile->getMetadata()->album,
+                'trackNo' => $trackFile->getMetadata()->trackNo,
+            ];
+        }
+
+        return json_encode($result);
     }
 }

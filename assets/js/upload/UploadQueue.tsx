@@ -6,10 +6,6 @@ import { Check, Clock, UploadCloud, X } from 'react-feather';
 type UploadQueueProps = { queue: UploadedFile[] };
 
 const UploadQueue: React.FC<UploadQueueProps> = ({ queue }) => {
-    if (queue.length === 0) {
-        return <></>;
-    }
-
     function buildStatusIcon(status: UploadedFileStatus): ReactNode {
         switch (status) {
             case UploadedFileStatus.SUCCESS:
@@ -45,6 +41,11 @@ const UploadQueue: React.FC<UploadQueueProps> = ({ queue }) => {
     return (
         <div className="upload-queue">
             <div className="upload-queue-heading">Upload queue</div>
+            {queue.length === 0 && (
+                <div className="upload-queue-empty">
+                    Uploaded files will appear here…
+                </div>
+            )}
             <div className="upload-queue-items">
                 {queue.map((file) => (
                     <div className="upload-queue-item" key={file.id}>

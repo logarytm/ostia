@@ -86,10 +86,6 @@ class UploadView extends React.Component<{}, UploadViewState> {
     }
 
     private renderProceed(): ReactNode {
-        if (this.state.queue.length === 0) {
-            return;
-        }
-
         return (
             <div className="upload-proceed">
                 <button className="btn" type="button" onClick={() => {
@@ -98,7 +94,7 @@ class UploadView extends React.Component<{}, UploadViewState> {
                     <span className="btn-icon">
                         <ArrowRight/>
                     </span>
-                    Next
+                    Next: Tags
                 </button>
             </div>
         );
