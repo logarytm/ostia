@@ -25,7 +25,7 @@ class Track
     private $title;
 
     /**
-     * @ORM\Column(type="dateinterval")
+     * @ORM\Column(type="duration")
      */
     private $duration;
 
@@ -45,8 +45,11 @@ class Track
      */
     private $metadata;
 
-    public function __construct()
+    public function __construct(User $user, string $title, Duration $duration)
     {
+        $this->user = $user;
+        $this->title = $title;
+        $this->duration = $duration;
         $this->playlists = new ArrayCollection();
         $this->metadata = new TrackMetadata();
     }
@@ -68,16 +71,9 @@ class Track
         return $this;
     }
 
-    public function getDuration(): ?\DateInterval
+    public function getDuration(): Duration
     {
         return $this->duration;
-    }
-
-    public function setDuration(\DateInterval $duration): self
-    {
-        $this->duration = $duration;
-
-        return $this;
     }
 
     /**

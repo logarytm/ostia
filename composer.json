@@ -5,9 +5,11 @@
         "php": "^7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "beberlei/assert": "^3.2",
         "fzaninotto/faker": "^1.9",
         "nelmio/cors-bundle": "^2.0",
+        "php-ffmpeg/php-ffmpeg": "^0.16.0",
         "ramsey/uuid": "^4.0",
         "ramsey/uuid-doctrine": "^1.6",
         "sensio/framework-extra-bundle": "^5.1",
@@ -21,6 +23,7 @@
         "symfony/http-client": "5.0.*",
         "symfony/intl": "5.0.*",
         "symfony/mailer": "5.0.*",
+        "symfony/messenger": "5.0.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.0.*",
         "symfony/orm-pack": "*",
@@ -35,8 +38,7 @@
         "symfony/web-link": "5.0.*",
         "symfony/webpack-encore-bundle": "^1.7",
         "symfony/yaml": "5.0.*",
-        "symfonycasts/reset-password-bundle": "^1.1",
-        "ext-json": "*"
+        "symfonycasts/reset-password-bundle": "^1.1"
     },
     "require-dev": {
         "dama/doctrine-test-bundle": "^6.3",

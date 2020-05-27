@@ -1,4 +1,7 @@
 {
+    "alchemy/binary-driver": {
+        "version": "v5.2.0"
+    },
     "beberlei/assert": {
         "version": "v3.2.7"
     },
@@ -99,6 +102,9 @@
     "egulias/email-validator": {
         "version": "2.1.17"
     },
+    "evenement/evenement": {
+        "version": "v3.0.1"
+    },
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
@@ -126,6 +132,9 @@
             "config/packages/nelmio_cors.yaml"
         ]
     },
+    "neutron/temporary-filesystem": {
+        "version": "2.4"
+    },
     "nikic/php-parser": {
         "version": "v4.4.0"
     },
@@ -137,6 +146,9 @@
     },
     "php": {
         "version": "7.4"
+    },
+    "php-ffmpeg/php-ffmpeg": {
+        "version": "v0.16"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.1.0"
@@ -341,6 +353,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "8a2675c061737658bed85102e9241c752620e575"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/mime": {
         "version": "v5.0.8"

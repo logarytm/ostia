@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TrackFile;
+use App\Exception\TrackFileNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Ramsey\Uuid\UuidInterface;
@@ -42,5 +43,18 @@ class TrackFileRepository extends ServiceEntityRepository
     {
         $this->_em->remove($trackFile);
         $this->_em->flush();
+    }
+
+    public function getByUuid(UuidInterface $uuid): TrackFile
+    {
+        $trackFile = $this->findOneBy(['uuid' => $uuid]);
+        if ($trackFile === null) {
+            throw new TrackFileNotFoundException(sprintf(
+                'Track with UUID %s not found.',
+                $uuid
+            ));
+        }
+
+        return $trackFile;
     }
 }

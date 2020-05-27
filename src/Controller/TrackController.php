@@ -6,16 +6,16 @@ namespace App\Controller;
 
 use App\Entity\Track;
 use App\Entity\TrackFile;
+use App\Message\PrepareTrackFile;
 use App\Repository\TrackFileRepository;
 use App\Repository\TrackRepository;
-use DateInterval;
 use Ramsey\Uuid\Uuid;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 final class TrackController extends AbstractController
@@ -40,7 +40,7 @@ final class TrackController extends AbstractController
     /**
      * @Route("/tracks/ajaxUpload", methods={"POST"})
      */
-    public function ajaxUpload(Request $request): Response
+    public function ajaxUpload(Request $request, MessageBusInterface $bus): Response
     {
         $uuid = Uuid::uuid4();
         /** @var UploadedFile $uploadedFile */
@@ -66,6 +66,7 @@ final class TrackController extends AbstractController
         $trackFile->setName($uploadedFile->getClientOriginalName());
         $trackFile->setUuid($uuid);
         $this->trackFiles->add($trackFile);
+        $bus->dispatch(new PrepareTrackFile($uuid));
 
         return new JsonResponse(['uuid' => $uuid->toString()], 201);
     }
@@ -94,12 +95,15 @@ final class TrackController extends AbstractController
             return $this->badRequest('not_found', 'Uploaded file not found');
         }
 
-        $track = new Track();
-        // TODO TODO TODO
-        $track->setTitle(pathinfo($trackFile->getName(), PATHINFO_BASENAME));
-        $track->setDuration(new DateInterval('PT23M23S'));
-        $track->setUser($this->getUser());
+        if (!$trackFile->isReady()) {
+            return $this->badRequest('not_ready', 'Track is not ready');
+        }
 
+        $track = new Track(
+            $this->user(),
+            pathinfo($trackFile->getName(), PATHINFO_BASENAME),
+            $trackFile->getDuration()
+        );
         $this->tracks->add($track);
 
         (new Filesystem())->rename(

@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\TrackFileRepository;
+use DateInterval;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Form\Exception\LogicException;
 
 /**
  * @ORM\Entity(repositoryClass=TrackFileRepository::class)
@@ -27,6 +29,11 @@ class TrackFile
      * @ORM\Column(type="string", length=255)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="duration", nullable=true)
+     */
+    private ?Duration $duration;
 
     /**
      * @ORM\Embedded(class=TrackMetadata::class)
@@ -70,5 +77,29 @@ class TrackFile
     public function getMetadata(): TrackMetadata
     {
         return $this->metadata;
+    }
+
+    public function getDuration(): Duration
+    {
+        if (!$this->isDurationComputed()) {
+            throw new LogicException('Check isDurationComputed() before calling getDuration().');
+        }
+
+        return $this->duration;
+    }
+
+    public function isDurationComputed(): bool
+    {
+        return $this->duration !== null;
+    }
+
+    public function isReady(): bool
+    {
+        return $this->isDurationComputed();
+    }
+
+    public function setDuration(Duration $duration): void
+    {
+        $this->duration = $duration;
     }
 }

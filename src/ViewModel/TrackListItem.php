@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace App\ViewModel;
 
+use App\Entity\Duration;
 use App\Entity\Track;
-use DateInterval;
 
 final class TrackListItem
 {
     private int $id;
     private string $title;
-    private DateInterval $duration;
+    private Duration $duration;
 
     public function __construct(
         int $id,
         string $title,
-        DateInterval $duration
-    )
-    {
+        Duration $duration
+    ) {
         $this->id = $id;
         $this->title = $title;
         $this->duration = $duration;
@@ -43,7 +42,7 @@ final class TrackListItem
         return $this->title;
     }
 
-    public function getDuration(): DateInterval
+    public function getDuration(): Duration
     {
         return $this->duration;
     }
