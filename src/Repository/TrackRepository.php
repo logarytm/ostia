@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Track;
 use App\Entity\TrackFile;
+use App\ViewModel\TrackList;
+use App\ViewModel\TrackListItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -54,4 +56,15 @@ class TrackRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @return TrackList
+     */
+    public function all(): TrackList
+    {
+        $tracks = $this->findAll();
+        $items = array_map([TrackListItem::class, 'fromEntity'], $tracks);
+
+        return new TrackList(...$items);
+    }
 }

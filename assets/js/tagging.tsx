@@ -122,7 +122,7 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
         ) {
             return (
                 <div className="saving-proceed">
-                    <a className="btn" href="/library">
+                    <a className="btn" href="/library/tracks">
                             <span className="btn-icon">
                             <ArrowRight/>
                             </span>

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% trans %}Your tracks{% endtrans %}
+{% endblock %}
+
+{% block body %}
+    <div class="wrap">
+        <h1>{% trans %}Your tracks{% endtrans %}</h1>
+
+        <div class="track-list">
+            <div class="track-list-items">
+                {% for track in tracks %}
+                    <div class="track-list-item">
+                        <div class="track-list-item-info">
+                            <div class="track-list-item-title">
+                                {{ track.title }}
+                            </div>
+                            <div class="track-list-item-duration">
+                                {{ track.duration.format('%I:%S') }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('track_list') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('track_list') }}
+{% endblock %}

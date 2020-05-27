@@ -97,7 +97,7 @@ final class TrackController extends AbstractController
         $track = new Track();
         // TODO TODO TODO
         $track->setTitle(pathinfo($trackFile->getName(), PATHINFO_BASENAME));
-        $track->setDuration(new DateInterval('PT2323S'));
+        $track->setDuration(new DateInterval('PT23M23S'));
         $track->setUser($this->getUser());
 
         $this->tracks->add($track);
