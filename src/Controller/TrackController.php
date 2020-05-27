@@ -9,6 +9,7 @@ use App\Entity\TrackFile;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackFileRepository;
 use App\Repository\TrackRepository;
+use App\Track\TrackAudioStorage;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,11 +23,13 @@ final class TrackController extends AbstractController
 {
     private TrackRepository $tracks;
     private TrackFileRepository $trackFiles;
+    private TrackAudioStorage $storage;
 
-    public function __construct(TrackRepository $tracks, TrackFileRepository $trackFiles)
+    public function __construct(TrackRepository $tracks, TrackFileRepository $trackFiles, TrackAudioStorage $storage)
     {
         $this->tracks = $tracks;
         $this->trackFiles = $trackFiles;
+        $this->storage = $storage;
     }
 
     /**
@@ -62,9 +65,7 @@ final class TrackController extends AbstractController
 
         $uploadedFile->move($this->getParameter('app.temporary_dir'), $uuid->toString());
 
-        $trackFile = new TrackFile();
-        $trackFile->setName($uploadedFile->getClientOriginalName());
-        $trackFile->setUuid($uuid);
+        $trackFile = new TrackFile($uploadedFile->getClientOriginalName(), $uuid);
         $this->trackFiles->add($trackFile);
         $bus->dispatch(new PrepareTrackFile($uuid));
 
@@ -105,12 +106,7 @@ final class TrackController extends AbstractController
             $trackFile->getDuration()
         );
         $this->tracks->add($track);
-
-        (new Filesystem())->rename(
-            sprintf('%s/%s', $this->getParameter('app.temporary_dir'), $uuid->toString()),
-            sprintf('%s/%d', $this->getParameter('app.persistent_dir'), $track->getId())
-        );
-
+        $this->storage->saveToPersistentStorage($track, $trackFile);
         $this->trackFiles->remove($trackFile);
 
         return new JsonResponse([], 201);

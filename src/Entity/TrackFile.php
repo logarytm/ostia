@@ -18,17 +18,17 @@ class TrackFile
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="uuid")
      */
-    private $uuid;
+    private UuidInterface $uuid;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="duration", nullable=true)
@@ -38,10 +38,12 @@ class TrackFile
     /**
      * @ORM\Embedded(class=TrackMetadata::class)
      */
-    private $metadata;
+    private TrackMetadata $metadata;
 
-    public function __construct()
+    public function __construct(string $name, UuidInterface $uuid)
     {
+        $this->name = $name;
+        $this->uuid = $uuid;
         $this->metadata = new TrackMetadata();
     }
 
@@ -55,23 +57,9 @@ class TrackFile
         return $this->uuid;
     }
 
-    public function setUuid(UuidInterface $uuid): self
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getMetadata(): TrackMetadata
@@ -88,6 +76,11 @@ class TrackFile
         return $this->duration;
     }
 
+    public function setDuration(Duration $duration): void
+    {
+        $this->duration = $duration;
+    }
+
     public function isDurationComputed(): bool
     {
         return $this->duration !== null;
@@ -96,10 +89,5 @@ class TrackFile
     public function isReady(): bool
     {
         return $this->isDurationComputed();
-    }
-
-    public function setDuration(Duration $duration): void
-    {
-        $this->duration = $duration;
     }
 }

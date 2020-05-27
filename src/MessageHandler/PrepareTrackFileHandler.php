@@ -9,7 +9,7 @@ use App\Entity\TrackFile;
 use App\Exception\TrackFileNotFoundException;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackFileRepository;
-use App\Track\TrackFileStorage;
+use App\Track\TrackAudioStorage;
 use DateInterval;
 use FFMpeg\FFProbe;
 use Psr\Log\LoggerInterface;
@@ -18,10 +18,10 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 final class PrepareTrackFileHandler implements MessageHandlerInterface
 {
     private TrackFileRepository $trackFiles;
-    private TrackFileStorage $storage;
+    private TrackAudioStorage $storage;
     private LoggerInterface $logger;
 
-    public function __construct(TrackFileRepository $trackFiles, TrackFileStorage $storage, LoggerInterface $logger)
+    public function __construct(TrackFileRepository $trackFiles, TrackAudioStorage $storage, LoggerInterface $logger)
     {
         $this->trackFiles = $trackFiles;
         $this->storage = $storage;
