@@ -8,7 +8,6 @@ const FILE_FIELD = 'file';
 const UploadForm: React.FC<{ emitter: UploadEmitter }> = ({ emitter }) => {
     function handleChange(e: ChangeEvent<HTMLInputElement>) {
         function toQueuedFile(file: File) {
-
             const formData = new FormData();
             formData.append(FILE_FIELD, file);
 

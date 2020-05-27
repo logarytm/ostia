@@ -99,6 +99,13 @@ input[type=search]:focus {
     box-shadow: 0 0 0 3px rgba(0, 0, 0, .2);
 }
 
+.btn[disabled] {
+    cursor: default;
+    border-color: #bbb;
+    background: #f6f6f6;
+    color: #888;
+}
+
 select:-moz-focusring {
     box-shadow: none;
     color: transparent;

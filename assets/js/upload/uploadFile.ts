@@ -5,19 +5,18 @@ export default function uploadFile(file: UploadedFile, emitter: UploadEmitter) {
     file.started();
 
     $.ajax({
-        url: '/tracks/upload',
-        dataType: 'html',
+        url: '/tracks/ajaxUpload',
+        dataType: 'json',
         contentType: false,
         processData: false,
         data: file.formData,
         type: 'post',
         success: (data) => {
-            console.log(`file ${file.name} uploaded successfully`);
-            file.success();
+            data = String(data.uuid);
+            file.success(data);
             emitter.emit('progress', { file });
         },
         error: (error) => {
-            console.log(`file ${file.name} upload failed`);
             console.log(error);
             file.error();
             emitter.emit('progress', { file });
@@ -28,7 +27,6 @@ export default function uploadFile(file: UploadedFile, emitter: UploadEmitter) {
             xhr.upload.addEventListener('progress', function (e) {
                 if (e.lengthComputable) {
                     file.bytesUploaded = e.loaded;
-                    console.log(file.name, file.bytesUploaded);
                     emitter.emit('progress', { file });
                 }
             }, false);

@@ -8,7 +8,7 @@ import UploadQueue from './upload/UploadQueue';
 import UploadForm from './upload/UploadForm';
 import { UploadedFile, UploadedFileStatus, UploadEmissions, UploadEmitter, UploadProgress } from './upload/UploadTypes';
 import uploadFile from './upload/uploadFile';
-import { ArrowLeft, ArrowRight } from 'react-feather';
+import { ArrowRight } from 'react-feather';
 
 type UploadViewState = { queue: UploadedFile[] };
 
@@ -35,11 +35,14 @@ class UploadView extends React.Component<{}, UploadViewState> {
         });
     }
 
-    private get hasPendingUploads(): boolean {
-        return this.state.queue.some((file) => (
+    private get canProceed(): boolean {
+        const hasPendingUploads = this.state.queue.some((file) => (
             file.status === UploadedFileStatus.PENDING
             || file.status === UploadedFileStatus.STARTED
         ));
+        const atLeastOneUploadSucceeded = this.state.queue.some((file) => file.status === UploadedFileStatus.SUCCESS);
+
+        return !hasPendingUploads && atLeastOneUploadSucceeded;
     }
 
     public render() {
@@ -66,12 +69,20 @@ class UploadView extends React.Component<{}, UploadViewState> {
         }
 
         const file = this.state.queue.find((file: UploadedFile) => file.status === UploadedFileStatus.PENDING);
-        console.log(this.state.queue);
         if (file == null) {
             return;
         }
 
         uploadFile(file, this.emitter);
+    }
+
+    private handleProceedClick(): void {
+        const uuids = this.state.queue
+            .filter((track) => track.status === UploadedFileStatus.SUCCESS)
+            .map((track) => track.uuid!)
+            .join(',');
+
+        window.location.replace(`/tracks/flow/tagging?uuids=${uuids}`);
     }
 
     private renderProceed(): ReactNode {
@@ -81,11 +92,13 @@ class UploadView extends React.Component<{}, UploadViewState> {
 
         return (
             <div className="upload-proceed">
-                <button className="btn" type="submit" disabled={this.hasPendingUploads}>
+                <button className="btn" type="button" onClick={() => {
+                    this.handleProceedClick();
+                }} disabled={!this.canProceed}>
                     <span className="btn-icon">
                         <ArrowRight/>
                     </span>
-                    Next: Tags
+                    Next
                 </button>
             </div>
         );

@@ -38,8 +38,9 @@ export class UploadedFile {
         this.statusBackingField = UploadedFileStatus.ERROR;
     }
 
-    public success(): void {
+    public success(uuid: string): void {
         this.statusBackingField = UploadedFileStatus.SUCCESS;
+        this.uuid = uuid;
     }
 }
 
