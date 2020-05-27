@@ -22,10 +22,8 @@ export default function uploadFile(file: UploadedFile, emitter: UploadEmitter) {
             file.status = UploadedFileStatus.ERROR;
             emitter.emit('progress', { file });
         },
-        // complete: (xhr, status) => {
-        // },
         xhr: () => {
-            let xhr = new window.XMLHttpRequest();
+            const xhr = new window.XMLHttpRequest();
 
             xhr.upload.addEventListener('progress', function (e) {
                 if (e.lengthComputable) {

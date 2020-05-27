@@ -48,6 +48,9 @@ const UploadQueue: React.FC<UploadQueueProps> = ({ queue }) => {
             <div className="upload-queue-items">
                 {queue.map((file) => (
                     <div className="upload-queue-item" key={file.id}>
+                        {file.status === UploadedFileStatus.STARTED && (
+                            <div className="upload-queue-item-meter" style={{ width: `${file.percentage}%` }}/>
+                        )}
                         <div className="upload-queue-item-status">
                             {buildStatusIcon(file.status)}
                         </div>

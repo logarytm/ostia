@@ -20,6 +20,7 @@
 .upload-queue-item {
     border: #ccc solid;
     border-width: 0 1px 1px 1px;
+    position: relative;
     padding: .85rem 0;
 }
 
@@ -84,4 +85,15 @@
         -ms-text-overflow: ellipsis;
         text-overflow: ellipsis;
     }
+}
+
+.upload-queue-item-meter {
+    position: absolute;
+    border-top-right-radius: 3px;
+    border: 1px #dcdfe6 solid;
+    background: #edf0f2;
+    bottom: -1px;
+    left: -1px;
+    height: 4px;
+    z-index: -1;
 }

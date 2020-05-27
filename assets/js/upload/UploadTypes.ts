@@ -20,7 +20,11 @@ export class UploadedFile {
         this.status = UploadedFileStatus.PENDING;
         this.bytesUploaded = 0;
     }
-};
+
+    public get percentage(): number {
+        return Math.round(100 * this.bytesUploaded / this.sizeBytes );
+    }
+}
 
 export type UploadProgress = {
     file: UploadedFile;
