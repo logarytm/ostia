@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\TrackFile;
+use App\Repository\TrackFileRepository;
 use App\Repository\TrackRepository;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,10 +18,12 @@ use Symfony\Component\Routing\Annotation\Route;
 final class TrackController extends AbstractController
 {
     private $tracks;
+    private TrackFileRepository $trackFiles;
 
-    public function __construct(TrackRepository $tracks)
+    public function __construct(TrackRepository $tracks, TrackFileRepository $trackFiles)
     {
         $this->tracks = $tracks;
+        $this->trackFiles = $trackFiles;
     }
 
     /**
@@ -71,8 +74,11 @@ final class TrackController extends AbstractController
     {
         $uuids = explode(',', $request->query->get('uuids'));
         $uuids = array_map('trim', $uuids);
+        $uuids = array_map([Uuid::class, 'fromString'], $uuids);
 
-        return $this->render('track/tags.html.twig');
+        $trackFiles = $this->trackFiles->getByUuids($uuids);
+
+        return $this->render('track/tags.html.twig', ['track_files' => $trackFiles]);
     }
 
     private function badRequest(string $reason, string $message): JsonResponse

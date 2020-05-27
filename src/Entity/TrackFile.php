@@ -27,6 +27,16 @@ class TrackFile
      */
     private $name;
 
+    /**
+     * @ORM\Embedded(class=TrackMetadata::class)
+     */
+    private $metadata;
+
+    public function __construct()
+    {
+        $this->metadata = new TrackMetadata();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -54,5 +64,10 @@ class TrackFile
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getMetadata(): TrackMetadata
+    {
+        return $this->metadata;
     }
 }

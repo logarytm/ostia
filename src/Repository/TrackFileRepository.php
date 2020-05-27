@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\TrackFile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @method TrackFile|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +20,15 @@ class TrackFileRepository extends ServiceEntityRepository
         parent::__construct($registry, TrackFile::class);
     }
 
-    // /**
-    //  * @return TrackFile[] Returns an array of TrackFile objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param UuidInterface[] $uuids
+     * @return TrackFile[]
+     */
+    public function getByUuids(array $uuids): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->_em
+            ->createQuery('SELECT tf FROM App\Entity\TrackFile tf WHERE tf.uuid IN (:uuids)')
+            ->setParameter(':uuids', $uuids)
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?TrackFile
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

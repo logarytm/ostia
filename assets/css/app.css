@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #fff;
     color: #111;
@@ -96,7 +100,7 @@ input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
 input[type=search]:focus {
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, .2);
+    box-shadow: 0 0 2px 3px rgba(0, 0, 0, .2);
 }
 
 .btn[disabled] {
