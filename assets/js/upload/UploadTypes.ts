@@ -8,8 +8,9 @@ export enum UploadedFileStatus {
 }
 
 export class UploadedFile {
-    public status: UploadedFileStatus;
+    private statusBackingField: UploadedFileStatus;
     public bytesUploaded: number;
+    public uuid: string | null;
 
     public constructor(
         public readonly formData: FormData,
@@ -17,12 +18,28 @@ export class UploadedFile {
         public readonly name: string,
         public readonly sizeBytes: number,
     ) {
-        this.status = UploadedFileStatus.PENDING;
+        this.statusBackingField = UploadedFileStatus.PENDING;
         this.bytesUploaded = 0;
     }
 
     public get percentage(): number {
-        return Math.round(100 * this.bytesUploaded / this.sizeBytes );
+        return Math.round(100 * this.bytesUploaded / this.sizeBytes);
+    }
+
+    public get status(): UploadedFileStatus {
+        return this.statusBackingField;
+    }
+
+    public started(): void {
+        this.statusBackingField = UploadedFileStatus.STARTED;
+    }
+
+    public error(): void {
+        this.statusBackingField = UploadedFileStatus.ERROR;
+    }
+
+    public success(): void {
+        this.statusBackingField = UploadedFileStatus.SUCCESS;
     }
 }
 

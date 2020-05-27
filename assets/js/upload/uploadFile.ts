@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import { UploadedFile, UploadedFileStatus, UploadEmitter } from './UploadTypes';
+import { UploadedFile, UploadEmitter } from './UploadTypes';
 
 export default function uploadFile(file: UploadedFile, emitter: UploadEmitter) {
-    file.status = UploadedFileStatus.STARTED;
+    file.started();
 
-    const request = $.ajax({
+    $.ajax({
         url: '/tracks/upload',
         dataType: 'html',
         contentType: false,
@@ -13,13 +13,13 @@ export default function uploadFile(file: UploadedFile, emitter: UploadEmitter) {
         type: 'post',
         success: (data) => {
             console.log(`file ${file.name} uploaded successfully`);
-            file.status = UploadedFileStatus.SUCCESS;
+            file.success();
             emitter.emit('progress', { file });
         },
         error: (error) => {
             console.log(`file ${file.name} upload failed`);
             console.log(error);
-            file.status = UploadedFileStatus.ERROR;
+            file.error();
             emitter.emit('progress', { file });
         },
         xhr: () => {

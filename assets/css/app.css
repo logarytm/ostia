@@ -1,7 +1,11 @@
 body {
     background-color: #fff;
     color: #111;
+}
+
+body, button, input, textarea, select {
     font-family: Inter, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 1rem;
 }
 
 .wrap {
@@ -57,4 +61,54 @@ body {
 
 .form .btn[type=submit] {
     margin-top: 1rem;
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+
+    margin-right: .25rem;
+    position: relative;
+    top: 2px;
+}
+
+.btn {
+    background: #eee;
+    border: 1px #999 solid;
+    border-radius: 3px;
+    color: #111;
+    padding: .5rem .85rem;
+    cursor: pointer;
+}
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=search] {
+    background: #fcfcfc;
+    border-radius: 3px;
+    border: 1px #999 solid;
+    padding: .5rem .85rem;
+}
+
+.btn:focus,
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=search]:focus {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .2);
+}
+
+select:-moz-focusring {
+    box-shadow: none;
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+.btn::-moz-focus-inner,
+.btn::-moz-focus-outer,
+select::-moz-focus-inner,
+select::-moz-focus-outer {
+    border: 0;
+    outline: none;
 }

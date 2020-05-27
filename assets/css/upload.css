@@ -18,16 +18,16 @@
 }
 
 .upload-queue-item {
-    border: #ccc solid;
+    border: #b6b6b6 solid;
     border-width: 0 1px 1px 1px;
     position: relative;
-    padding: .85rem 0;
+    padding: .85rem 0 .8rem 0;
 }
 
 .upload-queue-item:first-child {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    border-top: 1px #ccc solid;
+    border-top-width: 1px;
 }
 
 .upload-queue-item:last-child {
@@ -65,6 +65,9 @@
     margin: 0 8px 0 12px;
     height: 16px;
     width: 16px;
+
+    position: relative;
+    top: 2px;
 }
 
 @media screen and (max-width: 640px) {
@@ -96,4 +99,8 @@
     left: -1px;
     height: 4px;
     z-index: -1;
+}
+
+.upload-proceed {
+    margin-top: 1rem;
 }
