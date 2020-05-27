@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TrackFileRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Entity(repositoryClass=TrackFileRepository::class)
@@ -42,12 +43,12 @@ class TrackFile
         return $this->id;
     }
 
-    public function getUuid()
+    public function getUuid(): UuidInterface
     {
         return $this->uuid;
     }
 
-    public function setUuid($uuid): self
+    public function setUuid(UuidInterface $uuid): self
     {
         $this->uuid = $uuid;
 

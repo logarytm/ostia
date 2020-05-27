@@ -20,6 +20,12 @@ class TrackFileRepository extends ServiceEntityRepository
         parent::__construct($registry, TrackFile::class);
     }
 
+    public function add(TrackFile $trackFile)
+    {
+        $this->_em->persist($trackFile);
+        $this->_em->flush();
+    }
+
     /**
      * @param UuidInterface[] $uuids
      * @return TrackFile[]
@@ -30,5 +36,11 @@ class TrackFileRepository extends ServiceEntityRepository
             ->createQuery('SELECT tf FROM App\Entity\TrackFile tf WHERE tf.uuid IN (:uuids)')
             ->setParameter(':uuids', $uuids)
             ->getResult();
+    }
+
+    public function remove(TrackFile $trackFile): void
+    {
+        $this->_em->remove($trackFile);
+        $this->_em->flush();
     }
 }

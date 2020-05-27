@@ -20,9 +20,9 @@ class TrackRepository extends ServiceEntityRepository
         parent::__construct($registry, Track::class);
     }
 
-    public function add(TrackFile $trackFile): void
+    public function add(Track $track): void
     {
-        $this->_em->persist($trackFile);
+        $this->_em->persist($track);
         $this->_em->flush();
     }
 

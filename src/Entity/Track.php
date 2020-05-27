@@ -40,9 +40,15 @@ class Track
      */
     private $user;
 
+    /**
+     * @ORM\Embedded(class=TrackMetadata::class)
+     */
+    private $metadata;
+
     public function __construct()
     {
         $this->playlists = new ArrayCollection();
+        $this->metadata = new TrackMetadata();
     }
 
     public function getId(): ?int
