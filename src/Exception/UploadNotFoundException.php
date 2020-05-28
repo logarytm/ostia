@@ -6,6 +6,6 @@ namespace App\Exception;
 
 use RuntimeException;
 
-class TrackFileNotFoundException extends RuntimeException
+class UploadNotFoundException extends RuntimeException
 {
 }

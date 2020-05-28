@@ -5,14 +5,14 @@ import { ArrowRight, Check, Clock, UploadCloud, X } from 'react-feather';
 import { Emitter } from 'event-kit';
 import $ from 'jquery';
 
-enum TaggingTrackStatus {
+enum TrackReviewStatus {
     PENDING = 'pending',
     SAVING = 'saving',
     SAVED = 'saved',
     ERROR = 'error',
 }
 
-type TaggingTrackFile = {
+type TrackToReview = {
     readonly name: string;
     readonly uuid: string;
     title: string | null;
@@ -20,26 +20,26 @@ type TaggingTrackFile = {
     albumArtists: string[] | null;
     album: string | null;
     trackNo: number | null;
-    status: TaggingTrackStatus;
+    status: TrackReviewStatus;
 };
 
-declare var __trackFiles: TaggingTrackFile[];
+declare var __trackFiles: TrackToReview[];
 
 type TaggingViewProps = {
-    files: TaggingTrackFile[];
+    files: TrackToReview[];
 };
 
 type TaggingViewState = {
-    files: TaggingTrackFile[];
+    files: TrackToReview[];
 };
 
-function addFilesToLibrary(files: TaggingTrackFile[], emitter: SavingEmitter) {
-    const file = files.find((file) => file.status === TaggingTrackStatus.PENDING);
+function addFilesToLibrary(files: TrackToReview[], emitter: SavingEmitter) {
+    const file = files.find((file) => file.status === TrackReviewStatus.PENDING);
     if (!file) {
         return;
     }
 
-    file.status = TaggingTrackStatus.SAVING;
+    file.status = TrackReviewStatus.SAVING;
     emitter.emit('progress', { file });
 
     $.ajax({
@@ -51,19 +51,19 @@ function addFilesToLibrary(files: TaggingTrackFile[], emitter: SavingEmitter) {
             addFilesToLibrary(files, emitter);
         },
         success: () => {
-            file.status = TaggingTrackStatus.SAVED;
+            file.status = TrackReviewStatus.SAVED;
             emitter.emit('progress', { file });
         },
         error: (error) => {
             console.log(error);
-            file.status = TaggingTrackStatus.ERROR;
+            file.status = TrackReviewStatus.ERROR;
             emitter.emit('progress', { file });
         },
     });
 }
 
 type SavingEmissions = {
-    progress: { file: TaggingTrackFile };
+    progress: { file: TrackToReview };
 };
 
 type SavingEmitter = Emitter<SavingEmissions, SavingEmissions>;
@@ -118,7 +118,7 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
     public renderProceed(): ReactNode {
         if (
             this.state.files.length === 0
-            || this.state.files.every((file) => file.status === TaggingTrackStatus.SAVED)
+            || this.state.files.every((file) => file.status === TrackReviewStatus.SAVED)
         ) {
             return (
                 <div className="saving-proceed">
@@ -144,24 +144,24 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
         );
     }
 
-    private renderStatusIcon(status: TaggingTrackStatus): ReactNode {
+    private renderStatusIcon(status: TrackReviewStatus): ReactNode {
         switch (status) {
-            case TaggingTrackStatus.SAVED:
+            case TrackReviewStatus.SAVED:
                 return (
                     <Check color="mediumseagreen"/>
                 );
 
-            case TaggingTrackStatus.ERROR:
+            case TrackReviewStatus.ERROR:
                 return (
                     <X color="orangered"/>
                 );
 
-            case TaggingTrackStatus.PENDING:
+            case TrackReviewStatus.PENDING:
                 return (
                     <Clock color="darkgray"/>
                 );
 
-            case TaggingTrackStatus.SAVING:
+            case TrackReviewStatus.SAVING:
                 return (
                     <UploadCloud color="cornflowerblue"/>
                 );
@@ -169,4 +169,4 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
     }
 }
 
-render(<TaggingView files={__trackFiles as TaggingTrackFile[]}/>, document.querySelector('#react-content'));
+render(<TaggingView files={__trackFiles as TrackToReview[]}/>, document.querySelector('#react-content'));

@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\TrackFileRepository;
-use DateInterval;
+use App\Repository\TrackUploadRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Form\Exception\LogicException;
@@ -11,7 +10,7 @@ use Symfony\Component\Form\Exception\LogicException;
 /**
  * @ORM\Entity(repositoryClass=TrackFileRepository::class)
  */
-class TrackFile
+class TrackUpload
 {
     /**
      * @ORM\Id

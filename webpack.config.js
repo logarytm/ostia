@@ -25,7 +25,7 @@ Encore
      */
     .addEntry('app', './assets/js/app.ts')
     .addEntry('upload', './assets/js/upload.tsx')
-    .addEntry('tagging', './assets/js/tagging.tsx')
+    .addEntry('review', './assets/js/review.tsx')
     .addEntry('track_list', './assets/js/trackList.tsx')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')

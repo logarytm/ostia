@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Track;
 
 use App\Entity\Track;
-use App\Entity\TrackFile;
+use App\Entity\TrackUpload;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-class TrackAudioStorage
+class Storage
 {
     private string $temporaryDir;
     private string $persistentDir;
@@ -25,7 +25,7 @@ class TrackAudioStorage
         return sprintf('%s/%s', $this->temporaryDir, $uuid->toString());
     }
 
-    public function saveToPersistentStorage(Track $track, TrackFile $trackFile): void
+    public function saveToPersistentStorage(Track $track, TrackUpload $trackFile): void
     {
         (new Filesystem())->rename(
             $this->getTemporaryFilePath($trackFile->getUuid()),

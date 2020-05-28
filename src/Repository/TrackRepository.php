@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Track;
-use App\Entity\TrackFile;
+use App\Entity\TrackUpload;
 use App\ViewModel\TrackList;
 use App\ViewModel\TrackListItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

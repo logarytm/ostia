@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Track;
-use App\Entity\TrackFile;
+use App\Entity\TrackUpload;
 use App\Message\PrepareTrackFile;
-use App\Repository\TrackFileRepository;
 use App\Repository\TrackRepository;
-use App\Track\TrackAudioStorage;
+use App\Repository\TrackUploadRepository;
+use App\Track\Storage;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -22,25 +22,25 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
  */
-final class TrackController extends AbstractController
+final class TracksController extends AbstractController
 {
     private TrackRepository $tracks;
-    private TrackFileRepository $trackFiles;
-    private TrackAudioStorage $storage;
+    private TrackUploadRepository $trackUploads;
+    private Storage $storage;
 
-    public function __construct(TrackRepository $tracks, TrackFileRepository $trackFiles, TrackAudioStorage $storage)
+    public function __construct(TrackRepository $tracks, TrackUploadRepository $trackUploads, Storage $storage)
     {
         $this->tracks = $tracks;
-        $this->trackFiles = $trackFiles;
+        $this->trackUploads = $trackUploads;
         $this->storage = $storage;
     }
 
     /**
-     * @Route("/tracks/add", methods={"GET"})
+     * @Route("/tracks/upload", methods={"GET"})
      */
-    public function add(): Response
+    public function upload(): Response
     {
-        return $this->render('track/add.html.twig');
+        return $this->render('tracks/upload.html.twig');
     }
 
     /**
@@ -68,22 +68,22 @@ final class TrackController extends AbstractController
 
         $uploadedFile->move($this->getParameter('app.temporary_dir'), $uuid->toString());
 
-        $trackFile = new TrackFile($uuid, $uploadedFile->getClientOriginalName());
-        $this->trackFiles->add($trackFile);
+        $upload = new TrackUpload($uuid, $uploadedFile->getClientOriginalName());
+        $this->trackUploads->add($upload);
         $bus->dispatch(new PrepareTrackFile($uuid));
 
         return new JsonResponse(['uuid' => $uuid->toString()], 201);
     }
 
     /**
-     * @Route("/tracks/flow/tagging")
+     * @Route("/tracks/review")
      */
-    public function tags(Request $request): Response
+    public function review(Request $request): Response
     {
         $uuids = $this->getUuidsFromQuery($request);
-        $trackFiles = $this->trackFiles->getByIds(...$uuids);
+        $trackUploads = $this->trackUploads->getByIds(...$uuids);
 
-        return $this->render('track/tags.html.twig', ['track_files_json' => $this->buildTrackFileJson($trackFiles)]);
+        return $this->render('track/tags.html.twig', ['track_uploads_json' => $this->buildJsonForReview($trackUploads)]);
     }
 
     /**
@@ -92,25 +92,25 @@ final class TrackController extends AbstractController
     public function addToLibrary(Request $request): Response
     {
         $id = Uuid::fromString($request->request->get('uuid'));
-        $trackFile = $this->trackFiles->getById($id);
+        $upload = $this->trackUploads->getById($id);
 
-        if (!$trackFile) {
+        if (!$upload) {
             return $this->badRequest('not_found', 'Uploaded file not found');
         }
 
-        if (!$trackFile->isReady()) {
+        if (!$upload->isReady()) {
             return $this->badRequest('not_ready', 'Track is not ready');
         }
 
         $track = new Track(
             Uuid::uuid4(),
             $this->user(),
-            pathinfo($trackFile->getName(), PATHINFO_BASENAME),
-            $trackFile->getDuration()
+            pathinfo($upload->getName(), PATHINFO_BASENAME),
+            $upload->getDuration()
         );
         $this->tracks->add($track);
-        $this->storage->saveToPersistentStorage($track, $trackFile);
-        $this->trackFiles->remove($trackFile);
+        $this->storage->saveToPersistentStorage($track, $upload);
+        $this->trackUploads->remove($upload);
 
         return new JsonResponse([], 201);
     }
@@ -123,20 +123,20 @@ final class TrackController extends AbstractController
         ], 400);
     }
 
-    /** @param TrackFile[] $trackFiles */
-    private function buildTrackFileJson(array $trackFiles): string
+    /** @param TrackUpload[] $uploads */
+    private function buildJsonForReview(array $uploads): string
     {
         $result = [];
 
-        foreach ($trackFiles as $trackFile) {
+        foreach ($uploads as $upload) {
             $result[] = [
-                'uuid' => $trackFile->getUuid()->toString(),
-                'name' => $trackFile->getName(),
-                'title' => $trackFile->getMetadata()->title,
-                'artists' => $trackFile->getMetadata()->artists,
-                'albumArtists' => $trackFile->getMetadata()->albumArtists,
-                'album' => $trackFile->getMetadata()->album,
-                'trackNo' => $trackFile->getMetadata()->trackNo,
+                'uuid' => $upload->getUuid()->toString(),
+                'name' => $upload->getName(),
+                'title' => $upload->getMetadata()->title,
+                'artists' => $upload->getMetadata()->artists,
+                'albumArtists' => $upload->getMetadata()->albumArtists,
+                'album' => $upload->getMetadata()->album,
+                'trackNo' => $upload->getMetadata()->trackNo,
                 'status' => 'pending',
             ];
         }
@@ -149,6 +149,7 @@ final class TrackController extends AbstractController
         $uuids = explode(',', $request->query->get('uuids'));
         $uuids = array_map('trim', $uuids);
         $uuids = array_map([Uuid::class, 'fromString'], $uuids);
+
         return $uuids;
     }
 }
