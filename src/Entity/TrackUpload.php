@@ -45,12 +45,7 @@ class TrackUpload
         return $this->id;
     }
 
-    public function getUuid(): UuidInterface
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
+    public function getFilename(): ?string
     {
         return $this->name;
     }

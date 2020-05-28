@@ -9,7 +9,7 @@ use App\Entity\TrackUpload;
 use App\Exception\UploadNotFoundException;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackUploadRepository;
-use App\Track\Storage;
+use App\Storage\Storage;
 use FFMpeg\FFProbe;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -43,7 +43,7 @@ final class PrepareTrackFileHandler implements MessageHandlerInterface
     {
         $ffprobe = FFProbe::create();
         $totalSeconds = $ffprobe
-            ->format($this->storage->getTemporaryFilePath($trackFile->getUuid()))
+            ->format($this->storage->getTemporaryFilePath($trackFile->getId()))
             ->get('duration');
 
         $trackFile->setDuration(Duration::fromSeconds((int)$totalSeconds));

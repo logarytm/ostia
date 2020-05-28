@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\TrackUpload;
 use App\Exception\UploadNotFoundException;
+use App\ViewModel\TrackToReview;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Ramsey\Uuid\UuidInterface;
@@ -55,5 +56,13 @@ class TrackUploadRepository extends ServiceEntityRepository
         }
 
         return $trackFile;
+    }
+
+    /** @return TrackToReview[] */
+    public function getTracksToReview(UuidInterface ...$ids): array
+    {
+        $uploads = $this->getByIds(...$ids);
+
+        return array_map([TrackToReview::class, 'fromUpload'], $uploads);
     }
 }

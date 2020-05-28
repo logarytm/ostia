@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Track;
+namespace App\Storage;
 
 use App\Entity\Track;
 use App\Entity\TrackUpload;
@@ -28,7 +28,7 @@ class Storage
     public function saveToPersistentStorage(Track $track, TrackUpload $trackFile): void
     {
         (new Filesystem())->rename(
-            $this->getTemporaryFilePath($trackFile->getUuid()),
+            $this->getTemporaryFilePath($trackFile->getId()),
             $this->getAudioFilePath($track)
         );
     }

@@ -40,15 +40,15 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {{ encore_entry_link_tags('tagging') }}
+    {{ encore_entry_link_tags('review') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
         {% autoescape 'js' %}
-            window.__trackFiles = {{ track_files_json|raw }};
+            window.__tracksToReview = {{ tracks_to_review_json|raw }};
         {% endautoescape %}
     </script>
-    {{ encore_entry_script_tags('tagging') }}
+    {{ encore_entry_script_tags('review') }}
 {% endblock %}

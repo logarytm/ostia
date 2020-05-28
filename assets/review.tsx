@@ -1,9 +1,10 @@
-import '../css/tagging.css';
+import './css/review.css';
 import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
 import { ArrowRight, Check, Clock, UploadCloud, X } from 'react-feather';
 import { Emitter } from 'event-kit';
 import $ from 'jquery';
+import { generateUrl, Route } from './common/Routing';
 
 enum TrackReviewStatus {
     PENDING = 'pending',
@@ -13,8 +14,8 @@ enum TrackReviewStatus {
 }
 
 type TrackToReview = {
-    readonly name: string;
-    readonly uuid: string;
+    readonly id: string;
+    readonly filename: string;
     title: string | null;
     artists: string[] | null;
     albumArtists: string[] | null;
@@ -23,17 +24,9 @@ type TrackToReview = {
     status: TrackReviewStatus;
 };
 
-declare var __trackFiles: TrackToReview[];
+declare var __tracksToReview: TrackToReview[];
 
-type TaggingViewProps = {
-    files: TrackToReview[];
-};
-
-type TaggingViewState = {
-    files: TrackToReview[];
-};
-
-function addFilesToLibrary(files: TrackToReview[], emitter: SavingEmitter) {
+function addFilesToLibrary(files: TrackToReview[], emitter: ReviewEmitter) {
     const file = files.find((file) => file.status === TrackReviewStatus.PENDING);
     if (!file) {
         return;
@@ -43,10 +36,10 @@ function addFilesToLibrary(files: TrackToReview[], emitter: SavingEmitter) {
     emitter.emit('progress', { file });
 
     $.ajax({
-        url: '/tracks/ajaxAddToLibrary',
+        url: generateUrl(Route.AJAX_TRACKS_ADD_TO_LIBRARY),
         type: 'post',
         dataType: 'json',
-        data: { uuid: file.uuid },
+        data: { id: file.id },
         complete: () => {
             addFilesToLibrary(files, emitter);
         },
@@ -62,20 +55,28 @@ function addFilesToLibrary(files: TrackToReview[], emitter: SavingEmitter) {
     });
 }
 
-type SavingEmissions = {
+type ReviewEmissions = {
     progress: { file: TrackToReview };
 };
 
-type SavingEmitter = Emitter<SavingEmissions, SavingEmissions>;
+type ReviewEmitter = Emitter<ReviewEmissions, ReviewEmissions>;
 
-class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
-    private readonly emitter: SavingEmitter;
+type ReviewFormProps = {
+    files: TrackToReview[];
+};
 
-    public constructor(props: TaggingViewProps) {
+type ReviewFormState = {
+    files: TrackToReview[];
+};
+
+class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
+    private readonly emitter: ReviewEmitter;
+
+    public constructor(props: ReviewFormProps) {
         super(props);
 
         this.state = { files: props.files };
-        this.emitter = new Emitter<SavingEmissions, SavingEmissions>();
+        this.emitter = new Emitter<ReviewEmissions, ReviewEmissions>();
         this.emitter.on('progress', ({ file }) => {
             this.forceUpdate();
         });
@@ -83,16 +84,16 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
 
     public render(): ReactNode {
         return (
-            <div className="saving-view">
-                <div className="saving-view-items">
+            <div className="review">
+                <div className="review-items">
                     {this.state.files.map((file) => (
-                        <div className="saving-item" key={file.uuid}>
-                            <div className="saving-item-status">
+                        <div className="review-item" key={file.id}>
+                            <div className="review-item-status">
                                 {this.renderStatusIcon(file.status)}
                             </div>
-                            <div className="saving-item-info">
-                                <div className="saving-item-name">
-                                    {file.name}
+                            <div className="review-item-info">
+                                <div className="review-item-name">
+                                    {file.filename}
                                 </div>
                             </div>
                         </div>
@@ -121,7 +122,7 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
             || this.state.files.every((file) => file.status === TrackReviewStatus.SAVED)
         ) {
             return (
-                <div className="saving-proceed">
+                <div className="review-proceed">
                     <a className="btn" href="/library/tracks">
                             <span className="btn-icon">
                             <ArrowRight/>
@@ -133,7 +134,7 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
         }
 
         return (
-            <div className="saving-proceed">
+            <div className="review-proceed">
                 <button className="btn" type="button" onClick={() => this.handleProceed()}>
                     <span className="btn-icon">
                         <Check/>
@@ -169,4 +170,4 @@ class TaggingView extends React.Component<TaggingViewProps, TaggingViewState> {
     }
 }
 
-render(<TaggingView files={__trackFiles as TrackToReview[]}/>, document.querySelector('#react-content'));
+render(<ReviewForm files={__tracksToReview as TrackToReview[]}/>, document.querySelector('#react-content'));

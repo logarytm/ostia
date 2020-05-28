@@ -6,6 +6,6 @@
         "jsx": "react"
     },
     "include": [
-        "assets/js"
+        "assets"
     ]
 }

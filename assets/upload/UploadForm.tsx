@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import generateRandomId from './generateRandomId';
 import { UploadedFile, UploadEmitter } from './UploadTypes';
-import { map } from '../util/array';
+import { map } from '../common/ArrayUtils';
 
 const FILE_FIELD = 'file';
 

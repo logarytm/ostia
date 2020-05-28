@@ -9,7 +9,8 @@ use App\Entity\TrackUpload;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackRepository;
 use App\Repository\TrackUploadRepository;
-use App\Track\Storage;
+use App\Storage\Storage;
+use App\ViewModel\TrackToReview;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -18,25 +19,32 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
+ * @IsGranted("ROLE_USER")
  */
 final class TracksController extends AbstractController
 {
     private TrackRepository $tracks;
     private TrackUploadRepository $trackUploads;
     private Storage $storage;
+    private SerializerInterface $serializer;
 
-    public function __construct(TrackRepository $tracks, TrackUploadRepository $trackUploads, Storage $storage)
-    {
+    public function __construct(
+        TrackRepository $tracks,
+        TrackUploadRepository $trackUploads,
+        Storage $storage,
+        SerializerInterface $serializer
+    ) {
         $this->tracks = $tracks;
         $this->trackUploads = $trackUploads;
         $this->storage = $storage;
+        $this->serializer = $serializer;
     }
 
     /**
-     * @Route("/tracks/upload", methods={"GET"})
+     * @Route("/tracks/upload", name="tracks_upload", methods={"GET"})
      */
     public function upload(): Response
     {
@@ -44,16 +52,16 @@ final class TracksController extends AbstractController
     }
 
     /**
-     * @Route("/tracks/ajaxUpload", methods={"POST"})
+     * @Route("/ajax/tracks/upload", name="ajax_tracks_upload", methods={"POST"})
      */
-    public function ajaxUpload(Request $request, MessageBusInterface $bus): Response
+    public function handleAjaxUpload(Request $request, MessageBusInterface $bus): Response
     {
         $uuid = Uuid::uuid4();
         /** @var UploadedFile $uploadedFile */
         $uploadedFile = $request->files->get('file');
 
         if (!$uploadedFile) {
-            return $this->badRequest('file_not_uploaded', 'File not uploaded');
+            return $this->createBadRequestResponse('file_not_uploaded', 'File not uploaded');
         }
 
         if (is_array($uploadedFile)) {
@@ -76,36 +84,38 @@ final class TracksController extends AbstractController
     }
 
     /**
-     * @Route("/tracks/review")
+     * @Route("/tracks/review", name="tracks_review")
      */
     public function review(Request $request): Response
     {
         $uuids = $this->getUuidsFromQuery($request);
-        $trackUploads = $this->trackUploads->getByIds(...$uuids);
+        $tracksToReview = $this->trackUploads->getTracksToReview(...$uuids);
 
-        return $this->render('track/tags.html.twig', ['track_uploads_json' => $this->buildJsonForReview($trackUploads)]);
+        return $this->render('tracks/review.html.twig', [
+            'tracks_to_review_json' => $this->serializer->serialize($tracksToReview, 'json'),
+        ]);
     }
 
     /**
-     * @Route("/tracks/ajaxAddToLibrary", methods={"POST"})
+     * @Route("/ajax/tracks/addToLibrary", name="ajax_tracks_add_to_library", methods={"POST"})
      */
     public function addToLibrary(Request $request): Response
     {
-        $id = Uuid::fromString($request->request->get('uuid'));
+        $id = Uuid::fromString($request->request->get('id'));
         $upload = $this->trackUploads->getById($id);
 
         if (!$upload) {
-            return $this->badRequest('not_found', 'Uploaded file not found');
+            return $this->createBadRequestResponse('not_found', 'Uploaded file not found');
         }
 
         if (!$upload->isReady()) {
-            return $this->badRequest('not_ready', 'Track is not ready');
+            return $this->createBadRequestResponse('not_ready', 'Track is not ready');
         }
 
         $track = new Track(
             Uuid::uuid4(),
             $this->user(),
-            pathinfo($upload->getName(), PATHINFO_BASENAME),
+            pathinfo($upload->getFilename(), PATHINFO_BASENAME),
             $upload->getDuration()
         );
         $this->tracks->add($track);
@@ -115,33 +125,12 @@ final class TracksController extends AbstractController
         return new JsonResponse([], 201);
     }
 
-    private function badRequest(string $reason, string $message): JsonResponse
+    private function createBadRequestResponse(string $reason, string $message): JsonResponse
     {
         return new JsonResponse([
             'reason' => $reason,
             'message' => $message,
         ], 400);
-    }
-
-    /** @param TrackUpload[] $uploads */
-    private function buildJsonForReview(array $uploads): string
-    {
-        $result = [];
-
-        foreach ($uploads as $upload) {
-            $result[] = [
-                'uuid' => $upload->getUuid()->toString(),
-                'name' => $upload->getName(),
-                'title' => $upload->getMetadata()->title,
-                'artists' => $upload->getMetadata()->artists,
-                'albumArtists' => $upload->getMetadata()->albumArtists,
-                'album' => $upload->getMetadata()->album,
-                'trackNo' => $upload->getMetadata()->trackNo,
-                'status' => 'pending',
-            ];
-        }
-
-        return json_encode($result);
     }
 
     private function getUuidsFromQuery(Request $request): array

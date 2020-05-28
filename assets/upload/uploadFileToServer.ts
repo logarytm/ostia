@@ -1,11 +1,12 @@
 import $ from 'jquery';
 import { UploadedFile, UploadEmitter } from './UploadTypes';
+import { generateUrl, Route } from '../common/Routing';
 
-export default function uploadFile(file: UploadedFile, emitter: UploadEmitter) {
+export default function uploadFileToServer(file: UploadedFile, emitter: UploadEmitter) {
     file.started();
 
     $.ajax({
-        url: '/tracks/ajaxUpload',
+        url: generateUrl(Route.AJAX_TRACKS_UPLOAD),
         dataType: 'json',
         contentType: false,
         processData: false,

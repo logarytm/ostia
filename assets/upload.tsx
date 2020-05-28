@@ -2,13 +2,14 @@ import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
 import { Emitter } from 'event-kit';
 
-import '../css/upload.css';
+import './css/upload.css';
 
 import UploadQueue from './upload/UploadQueue';
 import UploadForm from './upload/UploadForm';
 import { UploadedFile, UploadedFileStatus, UploadEmissions, UploadEmitter, UploadProgress } from './upload/UploadTypes';
-import uploadFile from './upload/uploadFile';
+import uploadFileToServer from './upload/uploadFileToServer';
 import { ArrowRight } from 'react-feather';
+import { generateUrl, Route } from './common/Routing';
 
 type UploadViewState = { queue: UploadedFile[] };
 
@@ -73,7 +74,7 @@ class UploadView extends React.Component<{}, UploadViewState> {
             return;
         }
 
-        uploadFile(file, this.emitter);
+        uploadFileToServer(file, this.emitter);
     }
 
     private handleProceedClick(): void {
@@ -82,7 +83,7 @@ class UploadView extends React.Component<{}, UploadViewState> {
             .map((track) => track.uuid!)
             .join(',');
 
-        window.location.replace(`/tracks/flow/tagging?uuids=${uuids}`);
+        window.location.replace(generateUrl(Route.TRACKS_REVIEW, { uuids }));
     }
 
     private renderProceed(): ReactNode {
