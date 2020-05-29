@@ -15,25 +15,11 @@ import { Track } from './tracks/TrackTypes';
 const emitter = new Emitter<PlaybackEmissions, PlaybackEmissions>();
 const driver = new PlaybackDriver(emitter);
 
+const state: { tracks: Track[], currentTrack: Track | null } = { tracks: [], currentTrack: null };
+
 function playAudioFile(uri: string) {
     driver.play(uri);
 }
-
-document.querySelector('#track-list-holder').addEventListener('dblclick', (e) => {
-    if (e.target instanceof HTMLElement && e.target.matches('.track-list-item')) {
-        const trackId: string = e.target.getAttribute('data-id');
-
-        $.ajax({
-            url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: trackId }),
-            type: 'get',
-            dataType: 'json',
-            success: (data) => {
-                console.log(data);
-                playAudioFile(data.preferred);
-            },
-        });
-    }
-});
 
 type TrackData = {
     id: string;
@@ -41,13 +27,28 @@ type TrackData = {
     duration: DurationData;
 }
 
+function onPlayRequest(track: Track): void {
+    $.ajax({
+        url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }),
+        type: 'get',
+        dataType: 'json',
+        success: (data) => {
+            state.currentTrack = track;
+            playAudioFile(data.preferred);
+        },
+    });
+}
+
 declare var __tracks: TrackData[];
 
-const tracks: Track[] = __tracks.map((trackData, index) => ({
-    id: trackData.id,
-    order: index,
-    title: trackData.title,
-    duration: Duration.fromSeconds(trackData.duration.totalSeconds),
-}));
+const tracks: Track[] = state.tracks = __tracks.map((trackData, index) => new Track(
+    trackData.id,
+    index,
+    trackData.title,
+    Duration.fromSeconds(trackData.duration.totalSeconds),
+));
 
-render(<TrackListView tracks={tracks}/>, document.querySelector('#track-list-holder'));
+render(
+    <TrackListView tracks={tracks} onPlayRequest={onPlayRequest}/>,
+    document.querySelector('#track-list-holder'),
+);
