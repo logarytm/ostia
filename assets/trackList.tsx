@@ -19,7 +19,7 @@ function playAudioFile(uri: string) {
     driver.play(uri);
 }
 
-document.querySelector('.track-list').addEventListener('dblclick', (e) => {
+document.querySelector('#track-list-holder').addEventListener('dblclick', (e) => {
     if (e.target instanceof HTMLElement && e.target.matches('.track-list-item')) {
         const trackId: string = e.target.getAttribute('data-id');
 
@@ -43,8 +43,9 @@ type TrackData = {
 
 declare var __tracks: TrackData[];
 
-const tracks: Track[] = __tracks.map((trackData) => ({
+const tracks: Track[] = __tracks.map((trackData, index) => ({
     id: trackData.id,
+    order: index,
     title: trackData.title,
     duration: Duration.fromSeconds(trackData.duration.totalSeconds),
 }));

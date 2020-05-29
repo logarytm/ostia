@@ -9,8 +9,13 @@ const TrackListView: React.FC<TrackListViewProps> = ({ tracks }) => {
     return (
         <div className="track-list">
             <div className="track-list-items">
-                {tracks.map((track) => (
+                {tracks.map((track, index) => (
                     <div className="track-list-item" key={track.id} data-id={track.id}>
+                        <div className="track-list-item-status">
+                            <div className="track-list-item-number">
+                                {index + 1}.
+                            </div>
+                        </div>
                         <div className="track-list-item-info">
                             <div className="track-list-item-title">
                                 {track.title}
