@@ -47,7 +47,7 @@
     {{ parent() }}
     <script>
         {% autoescape 'js' %}
-            window.__tracksToReview = {{ tracks_to_review_json|raw }};
+        window.__tracksToReview = {{ tracks_to_review_json|raw }};
         {% endautoescape %}
     </script>
     {{ encore_entry_script_tags('review') }}
