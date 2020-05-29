@@ -8,6 +8,10 @@
     position: relative;
 }
 
+.track-list-item-prerendered > * {
+    opacity: .6;
+}
+
 .track-list-item-playing .track-list-item-title {
     color: mediumslateblue;
 }
