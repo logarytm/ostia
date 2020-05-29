@@ -18,6 +18,12 @@ body, button, input, textarea, select {
     max-width: 800px;
 }
 
+@media screen and (max-width: 640px) {
+    .wrap {
+        padding: 0 .33rem;
+    }
+}
+
 .form label {
     display: block;
     font-weight: 500;
@@ -73,7 +79,6 @@ body, button, input, textarea, select {
 
     margin-right: .25rem;
     position: relative;
-    top: 2px;
 }
 
 .btn {

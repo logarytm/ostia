@@ -27,7 +27,7 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, onP
                         <div className="track-list-item-status">
                             {track.equals(currentTrack)
                                 ? (
-                                    <div className="track-list-item-status">
+                                    <div className="track-list-item-status-icon">
                                         <Play stroke="mediumslateblue"/>
                                     </div>
                                 )

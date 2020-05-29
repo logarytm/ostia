@@ -1,15 +1,15 @@
 .track-list-item {
+    align-items: center;
     border: #ccc solid;
     border-width: 0 1px 1px 1px;
     flex-direction: row;
     display: flex;
-    padding: .85rem .85rem;
+    padding: .85rem;
     position: relative;
 }
 
 .track-list-item-playing .track-list-item-title {
     color: mediumslateblue;
-    /*font-weight: 500;*/
 }
 
 /* Double-clicking on the entire .track-list-item should make it play. */
@@ -35,17 +35,25 @@
 }
 
 .track-list-item-status {
-    width: 40px;
+    flex-shrink: 0;
+    width: 32px;
+}
+
+.track-list-item-status-icon {
     height: 16px;
-    overflow: hidden;
-    color: #999;
     position: relative;
+    top: -2px;
+}
+
+.track-list-item-number {
+    color: #999;
+    vertical-align: middle;
 }
 
 .track-list-item-status svg {
     position: absolute;
     line-height: 1;
-    top: 0;
+    top: 2px;
     left: 0;
     height: 16px;
     width: 16px;
@@ -61,6 +69,11 @@
 
 .track-list-item-title {
     flex-grow: 1;
+    width: 100%;
+    padding-right: 1.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .track-list-item-duration {
@@ -70,6 +83,14 @@
 }
 
 @media screen and (max-width: 640px) {
+    .track-list-item {
+        padding: .75rem;
+    }
+
+    .track-list-item-status {
+        width: 28px;
+    }
+
     .track-list-item-info {
         flex-direction: column;
     }
