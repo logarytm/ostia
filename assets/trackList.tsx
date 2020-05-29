@@ -27,28 +27,38 @@ type TrackData = {
     duration: DurationData;
 }
 
-function onPlayRequest(track: Track): void {
-    $.ajax({
-        url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }),
-        type: 'get',
-        dataType: 'json',
-        success: (data) => {
-            state.currentTrack = track;
-            playAudioFile(data.preferred);
-        },
-    });
-}
-
 declare var __tracks: TrackData[];
 
-const tracks: Track[] = state.tracks = __tracks.map((trackData, index) => new Track(
+const tracksFromServer: Track[] = state.tracks = __tracks.map((trackData, index) => new Track(
     trackData.id,
     index,
     trackData.title,
     Duration.fromSeconds(trackData.duration.totalSeconds),
 ));
 
+function TrackListPage() {
+    const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
+    const [tracks, setTracks] = React.useState<Track[]>(tracksFromServer);
+
+    function onPlayRequest(track: Track): void {
+        console.log(track);
+        $.ajax({
+            url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }),
+            type: 'get',
+            dataType: 'json',
+            success: (data) => {
+                setCurrentTrack(track);
+                playAudioFile(data.preferred);
+            },
+        });
+    }
+
+    return (
+        <TrackListView currentTrack={currentTrack} tracks={tracks} onPlayRequest={onPlayRequest}/>
+    );
+}
+
 render(
-    <TrackListView tracks={tracks} onPlayRequest={onPlayRequest}/>,
+    <TrackListPage/>,
     document.querySelector('#track-list-holder'),
 );

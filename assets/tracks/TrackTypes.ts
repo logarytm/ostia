@@ -10,6 +10,6 @@ export class Track {
     }
 
     public equals(track: Track): boolean {
-        return this.id === track.id;
+        return track !== null && this.id === track.id;
     }
 };

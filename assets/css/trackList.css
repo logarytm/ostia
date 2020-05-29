@@ -7,6 +7,11 @@
     position: relative;
 }
 
+.track-list-item-playing .track-list-item-title {
+    color: mediumslateblue;
+    /*font-weight: 500;*/
+}
+
 /* Double-clicking on the entire .track-list-item should make it play. */
 .track-list-item::before {
     content: '';
@@ -31,7 +36,19 @@
 
 .track-list-item-status {
     width: 40px;
+    height: 16px;
+    overflow: hidden;
     color: #999;
+    position: relative;
+}
+
+.track-list-item-status svg {
+    position: absolute;
+    line-height: 1;
+    top: 0;
+    left: 0;
+    height: 16px;
+    width: 16px;
 }
 
 .track-list-item-info {
