@@ -13,11 +13,13 @@ class Storage
 {
     private string $temporaryDir;
     private string $persistentDir;
+    private string $persistentUrl;
 
-    public function __construct(string $temporaryDir, string $persistentDir)
+    public function __construct(string $temporaryDir, string $persistentDir, string $persistentUrl)
     {
         $this->temporaryDir = $temporaryDir;
         $this->persistentDir = $persistentDir;
+        $this->persistentUrl = $persistentUrl;
     }
 
     public function getTemporaryFilePath(UuidInterface $uuid): string
@@ -31,6 +33,11 @@ class Storage
             $this->getTemporaryFilePath($trackFile->getId()),
             $this->getAudioFilePath($track)
         );
+    }
+
+    public function getUrl(string $catalog, UuidInterface $id): string
+    {
+        return sprintf('%s/%s', $this->persistentUrl, $id->toString());
     }
 
     private function getAudioFilePath(Track $track): string

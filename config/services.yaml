@@ -4,7 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    app.persistent_dir: '%kernel.project_dir%/var/uploads/persistent'
+    app.persistent_url: '/uploads'
+    app.persistent_dir: '%kernel.project_dir%/public/uploads'
     app.temporary_dir: '%kernel.project_dir%/var/uploads/temporary'
 
 services:
@@ -31,3 +32,4 @@ services:
         arguments:
             $temporaryDir: '%app.temporary_dir%'
             $persistentDir: '%app.persistent_dir%'
+            $persistentUrl: '%app.persistent_url%'

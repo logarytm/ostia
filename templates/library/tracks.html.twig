@@ -11,7 +11,7 @@
         <div class="track-list">
             <div class="track-list-items">
                 {% for track in tracks %}
-                    <div class="track-list-item">
+                    <div class="track-list-item" data-id="{{ track.id }}">
                         <div class="track-list-item-info">
                             <div class="track-list-item-title">
                                 {{ track.title }}

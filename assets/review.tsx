@@ -123,10 +123,10 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
         ) {
             return (
                 <div className="review-proceed">
-                    <a className="btn" href="/library/tracks">
-                            <span className="btn-icon">
+                    <a className="btn" href={generateUrl(Route.LIBRARY_TRACKS)}>
+                        <span className="btn-icon">
                             <ArrowRight/>
-                            </span>
+                        </span>
                         Go to Library
                     </a>
                 </div>

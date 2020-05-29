@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Track;
 use App\Entity\TrackUpload;
+use App\Entity\User;
 use App\ViewModel\TrackList;
 use App\ViewModel\TrackListItem;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -60,9 +61,9 @@ class TrackRepository extends ServiceEntityRepository
     /**
      * @return TrackList
      */
-    public function all(): TrackList
+    public function all(User $user): TrackList
     {
-        $tracks = $this->findAll();
+        $tracks = $this->findBy(['user' => $user]);
         $items = array_map([TrackListItem::class, 'fromEntity'], $tracks);
 
         return new TrackList(...$items);

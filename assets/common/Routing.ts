@@ -4,6 +4,8 @@ export enum Route {
     AJAX_TRACKS_UPLOAD = '/ajax/tracks/upload',
     TRACKS_REVIEW = '/tracks/review',
     AJAX_TRACKS_ADD_TO_LIBRARY = '/ajax/tracks/addToLibrary',
+    LIBRARY_TRACKS = '/library/tracks',
+    AJAX_TRACKS_STREAM = '/ajax/tracks/{id}/stream',
 }
 
 type RouteParameters = {

@@ -9,6 +9,7 @@ use App\Entity\TrackUpload;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackRepository;
 use App\Repository\TrackUploadRepository;
+use App\Storage\Catalogs;
 use App\Storage\Storage;
 use App\ViewModel\TrackToReview;
 use Ramsey\Uuid\Uuid;
@@ -46,7 +47,7 @@ final class TracksController extends AbstractController
     /**
      * @Route("/tracks/upload", name="tracks_upload", methods={"GET"})
      */
-    public function upload(): Response
+    public function uploadAction(): Response
     {
         return $this->render('tracks/upload.html.twig');
     }
@@ -54,7 +55,7 @@ final class TracksController extends AbstractController
     /**
      * @Route("/ajax/tracks/upload", name="ajax_tracks_upload", methods={"POST"})
      */
-    public function handleAjaxUpload(Request $request, MessageBusInterface $bus): Response
+    public function ajaxUploadAction(Request $request, MessageBusInterface $bus): Response
     {
         $uuid = Uuid::uuid4();
         /** @var UploadedFile $uploadedFile */
@@ -86,7 +87,7 @@ final class TracksController extends AbstractController
     /**
      * @Route("/tracks/review", name="tracks_review")
      */
-    public function review(Request $request): Response
+    public function reviewAction(Request $request): Response
     {
         $uuids = $this->getUuidsFromQuery($request);
         $tracksToReview = $this->trackUploads->getTracksToReview(...$uuids);
@@ -99,7 +100,7 @@ final class TracksController extends AbstractController
     /**
      * @Route("/ajax/tracks/addToLibrary", name="ajax_tracks_add_to_library", methods={"POST"})
      */
-    public function addToLibrary(Request $request): Response
+    public function addToLibraryAction(Request $request): Response
     {
         $id = Uuid::fromString($request->request->get('id'));
         $upload = $this->trackUploads->getById($id);
@@ -123,6 +124,16 @@ final class TracksController extends AbstractController
         $this->trackUploads->remove($upload);
 
         return new JsonResponse([], 201);
+    }
+
+    /**
+     * @Route("/ajax/tracks/{id}/stream", name="ajax_tracks_stream")
+     */
+    public function streamAction(string $id): Response
+    {
+        return new JsonResponse([
+            'preferred' => $this->storage->getUrl(Catalogs::TRACKS, Uuid::fromString($id)),
+        ]);
     }
 
     private function createBadRequestResponse(string $reason, string $message): JsonResponse
