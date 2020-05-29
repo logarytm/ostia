@@ -27,7 +27,7 @@ final class TrackListItem
     public static function fromEntity(Track $track): self
     {
         return new TrackListItem(
-            $track->getId() ?? 0,
+            $track->getId(),
             $track->getTitle(),
             $track->getDuration()
         );
