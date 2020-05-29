@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TrackRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,6 +31,11 @@ class Track
     private Duration $duration;
 
     /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private DateTimeImmutable $dateCreated;
+
+    /**
      * @ORM\ManyToMany(targetEntity=Playlist::class, inversedBy="tracks")
      */
     private Collection $playlists;
@@ -45,12 +51,18 @@ class Track
      */
     private TrackMetadata $metadata;
 
-    public function __construct(UuidInterface $id, User $user, string $title, Duration $duration)
-    {
+    public function __construct(
+        UuidInterface $id,
+        User $user,
+        string $title,
+        Duration $duration,
+        DateTimeImmutable $dateCreated
+    ) {
         $this->id = $id;
         $this->user = $user;
         $this->title = $title;
         $this->duration = $duration;
+        $this->dateCreated = $dateCreated;
         $this->playlists = new ArrayCollection();
         $this->metadata = new TrackMetadata();
     }
@@ -65,16 +77,19 @@ class Track
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function rename(string $newTitle): void
     {
-        $this->title = $title;
-
-        return $this;
+        $this->title = $newTitle;
     }
 
     public function getDuration(): Duration
     {
         return $this->duration;
+    }
+
+    public function getDateCreated(): DateTimeImmutable
+    {
+        return $this->dateCreated;
     }
 
     public function addToPlaylist(Playlist $playlist): self

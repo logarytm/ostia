@@ -29,41 +29,12 @@ class TrackRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return Track[] Returns an array of Track objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Track
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
-
     /**
      * @return TrackList
      */
     public function all(User $user): TrackList
     {
-        $tracks = $this->findBy(['user' => $user]);
+        $tracks = $this->findBy(['user' => $user], ['dateCreated' => 'ASC']);
         $items = array_map([TrackListItem::class, 'fromEntity'], $tracks);
 
         return new TrackList(...$items);
