@@ -11,8 +11,13 @@
         <div id="track-list-holder">
             <div class="track-list">
                 <div class="track-list-items">
-                    {% for track in tracks %}
+                    {% for index, track in tracks %}
                         <div class="track-list-item" data-id="{{ track.id }}">
+                            <div class="track-list-item-status">
+                                <div class="track-list-item-number">
+                                    {{ index + 1 }}.
+                                </div>
+                            </div>
                             <div class="track-list-item-info">
                                 <div class="track-list-item-title">
                                     {{ track.title }}
