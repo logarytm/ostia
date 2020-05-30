@@ -4,7 +4,7 @@ import './css/trackList.css';
 import { generateUrl, Route } from './common/Routing';
 import PlaybackDriver from './playback/PlaybackDriver';
 import { Emitter } from 'event-kit';
-import { PlaybackEmissions } from './playback/PlaybackStatus';
+import { Loaded, PlaybackEmissions, PlaybackStatus } from './playback/PlaybackStatus';
 
 import $ from 'jquery';
 import Duration, { DurationData } from './common/Duration';
@@ -40,8 +40,18 @@ function TrackListPage() {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
     const [tracks, setTracks] = React.useState<Track[]>(tracksFromServer);
 
+    emitter.on('status', (status: PlaybackStatus) => {
+        if (status instanceof Loaded && status.ended && currentTrack !== null) {
+            const nextTrackIndex = currentTrack.index + 1;
+            if (nextTrackIndex < tracks.length) {
+                onPlayRequest(tracks[nextTrackIndex]);
+            } else {
+                setCurrentTrack(null);
+            }
+        }
+    });
+
     function onPlayRequest(track: Track): void {
-        console.log(track);
         $.ajax({
             url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }),
             type: 'get',

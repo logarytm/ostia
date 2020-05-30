@@ -3,7 +3,7 @@ import Duration from '../common/Duration';
 export class Track {
     public constructor(
         public readonly id: string,
-        public readonly order: number,
+        public readonly index: number,
         public readonly title: string,
         public readonly duration: Duration,
     ) {

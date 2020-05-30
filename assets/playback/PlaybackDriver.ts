@@ -12,6 +12,7 @@ export default class PlaybackDriver {
         return this.audioElement !== null
             ? new Loaded(
                 this.audioElement.paused,
+                this.audioElement.ended,
                 this.audioElement.src,
                 // The `||` accounts for NaN returned when the media has not yet been loaded.
                 Duration.fromSeconds(this.audioElement.currentTime || 0),
