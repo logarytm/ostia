@@ -15,7 +15,7 @@ const Player: React.FC<PlayerProps> = ({ driver, emitter }) => {
 
     emitter.on('status', (newStatus) => setStatus(newStatus));
 
-    function handlePlayPause(e) {
+    function handlePlayPause(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
         if (status instanceof Empty) {
             return;
         }
