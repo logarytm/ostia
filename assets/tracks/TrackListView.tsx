@@ -1,7 +1,7 @@
 import React from 'react';
 import { Track } from './TrackTypes';
 import { Pause, Play } from 'react-feather';
-import { Loaded, PlaybackStatus } from '../player/PlaybackStatus';
+import { Loaded, PlaybackStatus } from '../player/PlaybackTypes';
 
 type TrackListViewProps = {
     tracks: Track[];

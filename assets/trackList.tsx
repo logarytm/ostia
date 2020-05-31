@@ -4,7 +4,7 @@ import './css/trackList.css';
 import { generateUrl, Route } from './common/Routing';
 import PlaybackDriver from './player/PlaybackDriver';
 import { Emitter } from 'event-kit';
-import { Empty, Loaded, PlaybackEmissions, PlaybackStatus } from './player/PlaybackStatus';
+import { Empty, Loaded, PlaybackEmissions, PlaybackStatus } from './player/PlaybackTypes';
 
 import $ from 'jquery';
 import Duration, { DurationData } from './common/Duration';

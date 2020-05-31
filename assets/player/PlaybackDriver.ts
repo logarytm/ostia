@@ -1,4 +1,4 @@
-import { Empty, Loaded, PlaybackEmitter, PlaybackStatus } from './PlaybackStatus';
+import { Empty, Loaded, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import Duration from '../common/Duration';
 
 // TODO: Probably needs to support multiple URIs for cross-browser compatibility.

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Empty, Loaded, PlaybackEmitter, PlaybackStatus } from './PlaybackStatus';
+import { Empty, Loaded, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import { Track } from '../tracks/TrackTypes';
 import PlaybackDriver from './PlaybackDriver';
 import { Pause, Play } from 'react-feather';
