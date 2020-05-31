@@ -2,20 +2,19 @@ import React from 'react';
 
 import './css/trackList.css';
 import { generateUrl, Route } from './common/Routing';
-import PlaybackDriver from './playback/PlaybackDriver';
+import PlaybackDriver from './player/PlaybackDriver';
 import { Emitter } from 'event-kit';
-import { Loaded, PlaybackEmissions, PlaybackStatus } from './playback/PlaybackStatus';
+import { Empty, Loaded, PlaybackEmissions, PlaybackStatus } from './player/PlaybackStatus';
 
 import $ from 'jquery';
 import Duration, { DurationData } from './common/Duration';
 import { render } from 'react-dom';
 import TrackListView from './tracks/TrackListView';
 import { Track } from './tracks/TrackTypes';
+import Player from './player/Player';
 
 const emitter = new Emitter<PlaybackEmissions, PlaybackEmissions>();
 const driver = new PlaybackDriver(emitter);
-
-const state: { tracks: Track[], currentTrack: Track | null } = { tracks: [], currentTrack: null };
 
 function playAudioFile(uri: string) {
     driver.play(uri);
@@ -29,7 +28,7 @@ type TrackData = {
 
 declare var __tracks: TrackData[];
 
-const tracksFromServer: Track[] = state.tracks = __tracks.map((trackData, index) => new Track(
+const tracksFromServer: Track[] = __tracks.map((trackData, index) => new Track(
     trackData.id,
     index,
     trackData.title,
@@ -39,8 +38,11 @@ const tracksFromServer: Track[] = state.tracks = __tracks.map((trackData, index)
 function TrackListPage() {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
     const [tracks, setTracks] = React.useState<Track[]>(tracksFromServer);
+    const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
 
     emitter.on('status', (status: PlaybackStatus) => {
+        setStatus(status);
+
         if (status instanceof Loaded && status.ended && currentTrack !== null) {
             const nextTrackIndex = currentTrack.index + 1;
             if (nextTrackIndex < tracks.length) {
@@ -64,7 +66,10 @@ function TrackListPage() {
     }
 
     return (
-        <TrackListView currentTrack={currentTrack} tracks={tracks} onPlayRequest={onPlayRequest}/>
+        <>
+            <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={onPlayRequest}/>
+            <Player driver={driver} emitter={emitter} tracks={tracks}/>
+        </>
     );
 }
 

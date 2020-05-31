@@ -104,3 +104,30 @@
         margin-top: .25rem;
     }
 }
+
+.player-controls {
+    background-color: #fcfcfc;
+    border: 1px #ccc solid;
+    border-radius: 4px;
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.player-btn {
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    padding: 12px;
+    height: 48px;
+    width: 48px;
+    text-align: center;
+}
+
+.player-btn-play-pause {
+    background-color: mediumslateblue;
+}
+
+.player-btn-play-pause:disabled {
+    background-color: #beb2ed;
+}

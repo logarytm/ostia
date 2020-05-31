@@ -1,15 +1,16 @@
 import React from 'react';
 import { Track } from './TrackTypes';
-import { generateUrl, Route } from '../common/Routing';
-import { Play } from 'react-feather';
+import { Pause, Play } from 'react-feather';
+import { Loaded, PlaybackStatus } from '../player/PlaybackStatus';
 
 type TrackListViewProps = {
     tracks: Track[];
     currentTrack: Track;
+    status: PlaybackStatus;
     onPlayRequest: (track: Track) => void;
 };
 
-const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, onPlayRequest }) => {
+const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, status, onPlayRequest }) => {
     function handleDoubleClick(e: React.MouseEvent<HTMLDivElement>): void {
         const trackId: string = (e.target as HTMLDivElement).getAttribute('data-id');
         const track = tracks.find((track) => track.id === trackId);
@@ -27,9 +28,17 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, onP
                         <div className="track-list-item-status">
                             {track.equals(currentTrack)
                                 ? (
-                                    <div className="track-list-item-status-icon">
-                                        <Play stroke="mediumslateblue"/>
-                                    </div>
+                                    (status as Loaded).paused
+                                        ? (
+                                            <div className="track-list-item-status-icon">
+                                                <Pause stroke="mediumslateblue"/>
+                                            </div>
+                                        )
+                                        : (
+                                            <div className="track-list-item-status-icon">
+                                                <Play stroke="mediumslateblue"/>
+                                            </div>
+                                        )
                                 )
                                 : (
                                     <div className="track-list-item-number">

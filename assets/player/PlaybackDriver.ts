@@ -26,6 +26,11 @@ export default class PlaybackDriver {
         this.publishUpdate();
     }
 
+    public resume(): void {
+        this.audioElement!.play();
+        this.publishUpdate();
+    }
+
     public pause(): void {
         this.audioElement?.pause();
         this.publishUpdate();
