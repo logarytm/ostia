@@ -15,7 +15,7 @@ const Player: React.FC<PlayerProps> = ({ driver, emitter }) => {
 
     emitter.on('status', (newStatus) => setStatus(newStatus));
 
-    function handlePlayPause(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    function handlePlayPause() {
         if (status instanceof Empty) {
             return;
         }
@@ -30,6 +30,7 @@ const Player: React.FC<PlayerProps> = ({ driver, emitter }) => {
     return (
         <div className="player">
             <div className="player-controls">
+                {status instanceof Loaded && `${status.position.toString()} / ${status.totalDuration.toString()}`}
                 <button type="button" className="player-btn player-btn-play-pause" disabled={status instanceof Empty}
                         onClick={handlePlayPause}>
                     {(status instanceof Loaded && !status.paused)

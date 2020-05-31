@@ -39,11 +39,16 @@ export default class PlaybackDriver {
     private getOrCreateAudioElement(uri: string): HTMLAudioElement {
         if (this.audioElement === null) {
             this.audioElement = document.createElement('audio');
+            this.audioElement.loop = false;
             document.body.appendChild(this.audioElement);
 
             this.audioElement.addEventListener('timeupdate', () => {
                 this.publishUpdate();
             }, false);
+
+            this.audioElement.addEventListener('ended', () => {
+                this.emitter.emit('ended', this.status);
+            });
         }
 
         // Writing `src` always stops playback. Therefore, write it only when the URI actually changes.

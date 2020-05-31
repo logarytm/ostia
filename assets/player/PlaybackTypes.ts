@@ -19,6 +19,7 @@ export type PlaybackStatus = Loaded | Empty;
 
 export type PlaybackEmissions = {
     status: PlaybackStatus;
+    ended: PlaybackStatus;
 };
 
 export type PlaybackEmitter = Emitter<PlaybackEmissions, PlaybackEmissions>;

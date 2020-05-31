@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import './css/trackList.css';
 import { generateUrl, Route } from './common/Routing';
@@ -35,22 +35,27 @@ const tracksFromServer: Track[] = __tracks.map((trackData, index) => new Track(
     Duration.fromSeconds(trackData.duration.totalSeconds),
 ));
 
-function TrackListPage() {
+const TrackListPage: React.FC = () => {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
     const [tracks, setTracks] = React.useState<Track[]>(tracksFromServer);
     const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
 
-    emitter.on('status', (status: PlaybackStatus) => {
-        setStatus(status);
+    useEffect(() => {
+        const subscription = emitter.on('ended', (status: PlaybackStatus) => {
+            setStatus(status);
 
-        if (status instanceof Loaded && status.ended && currentTrack !== null) {
-            const nextTrackIndex = currentTrack.index + 1;
-            if (nextTrackIndex < tracks.length) {
-                onPlayRequest(tracks[nextTrackIndex]);
-            } else {
-                setCurrentTrack(null);
+            if (currentTrack !== null) {
+                const nextTrackIndex = currentTrack.index + 1;
+                if (nextTrackIndex < tracks.length) {
+                    console.log(currentTrack.index, nextTrackIndex, tracks.length, tracks[nextTrackIndex]);
+                    onPlayRequest(tracks[nextTrackIndex]);
+                } else {
+                    setCurrentTrack(null);
+                }
             }
-        }
+        });
+
+        return () => subscription.dispose();
     });
 
     function onPlayRequest(track: Track): void {
@@ -71,7 +76,7 @@ function TrackListPage() {
             <Player driver={driver} emitter={emitter} tracks={tracks}/>
         </>
     );
-}
+};
 
 render(
     <TrackListPage/>,
