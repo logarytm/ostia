@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Empty, Loaded, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
+import { Empty, Loaded, PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import { Track } from '../tracks/TrackTypes';
-import PlaybackDriver from './PlaybackDriver';
 import { Pause, Play } from 'react-feather';
 
 type PlayerProps = {
     emitter: PlaybackEmitter;
-    driver: PlaybackDriver;
+    controller: PlaybackController;
     tracks: Track[];
+    currentTrack: Track | null;
 };
 
-const Player: React.FC<PlayerProps> = ({ driver, emitter }) => {
+const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitter }) => {
     const [status, setStatus] = useState<PlaybackStatus>(new Empty());
 
     emitter.on('status', (newStatus) => setStatus(newStatus));
@@ -21,26 +21,30 @@ const Player: React.FC<PlayerProps> = ({ driver, emitter }) => {
         }
 
         if (status.paused) {
-            driver.resume();
+            controller.resume();
         } else {
-            driver.pause();
+            controller.pause();
         }
     }
 
     return (
         <div className="player">
             <div className="player-controls">
-                {status instanceof Loaded && `${status.position.toString()} / ${status.totalDuration.toString()}`}
-                <button type="button" className="player-btn player-btn-play-pause" disabled={status instanceof Empty}
+                <button type="button" className="player-btn player-btn-play-pause" disabled={currentTrack === null}
                         onClick={handlePlayPause}>
                     {(status instanceof Loaded && !status.paused)
-                        ? <Pause stroke="white"/>
-                        : <Play stroke="white"/>
+                        ? <Pause/>
+                        : <Play/>
                     }
                 </button>
             </div>
+            {status instanceof Loaded && (
+                <div className="player-position">
+                    {status.position.toString()} / {status.totalDuration.toString()}
+                </div>
+            )}
         </div>
     );
 };
 
-export default Player;
+export default PlayerControls;

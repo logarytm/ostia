@@ -1,5 +1,6 @@
 import Duration from '../common/Duration';
 import { Emitter } from 'event-kit';
+import { Track } from '../tracks/TrackTypes';
 
 export class Loaded {
     public constructor(
@@ -19,7 +20,15 @@ export type PlaybackStatus = Loaded | Empty;
 
 export type PlaybackEmissions = {
     status: PlaybackStatus;
-    ended: PlaybackStatus;
+    trackEnd: PlaybackStatus;
+    trackChange: Track | null;
 };
 
 export type PlaybackEmitter = Emitter<PlaybackEmissions, PlaybackEmissions>;
+
+export type PlaybackController = {
+    resume(): Promise<boolean>;
+    pause(): Promise<boolean>;
+    previous(): Promise<boolean>;
+    next(): Promise<boolean>;
+};

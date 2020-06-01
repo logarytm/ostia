@@ -4,7 +4,7 @@ export enum Route {
     AJAX_TRACKS_UPLOAD = '/ajax/tracks/upload',
     TRACKS_REVIEW = '/tracks/review',
     AJAX_TRACKS_ADD_TO_LIBRARY = '/ajax/tracks/addToLibrary',
-    LIBRARY_TRACKS = '/library/tracks',
+    LIBRARY_TRACKS = '/',
     AJAX_TRACKS_STREAM = '/ajax/tracks/{id}/stream',
 }
 
@@ -40,7 +40,7 @@ export function generateUrl(route: Route, parameters: RouteParameters = {}) {
 
     if (hasQueryString) {
         url += '?' + Object.entries(queryStringComponents)
-            .map(([k, v]) => encodeURIComponent(k) + '=' + v)
+            .map(([key, value]) => encodeURIComponent(key) + '=' + value)
             .join('&');
     }
 

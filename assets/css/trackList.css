@@ -16,7 +16,7 @@
     color: mediumslateblue;
 }
 
-/* Double-clicking on the entire .track-list-item should make it play. */
+/* Double-clicking on the entire .track-list-item should make it resume. */
 .track-list-item::before {
     content: '';
     position: absolute;
@@ -105,8 +105,8 @@
     }
 }
 
-.player-controls {
-    background-color: #fcfcfc;
+.player {
+    background-color: #fafafa;
     border: 1px #ccc solid;
     border-radius: 4px;
     margin-top: 1rem;
@@ -115,19 +115,57 @@
 }
 
 .player-btn {
-    border: none;
+    border: 1px transparent solid;
     background: transparent;
     border-radius: 50%;
-    padding: 12px;
+    cursor: pointer;
+    padding: 12px 0;
     height: 48px;
     width: 48px;
     text-align: center;
 }
 
 .player-btn-play-pause {
-    background-color: mediumslateblue;
+    background-color: #fff;
+    border: 1px #bbb solid;
+    box-shadow: 0 0 0 3px #e9e9e9;
+}
+
+.player-btn-play-pause:not(:disabled):hover {
+    background-color: #f9f9f9;
+}
+
+.player-btn-play-pause:focus {
+    background-color: #f9f9f9;
+    border-color: #777;
+    box-shadow: 0 0 1px 3px #bbb;
+    outline: none;
 }
 
 .player-btn-play-pause:disabled {
-    background-color: #beb2ed;
+    background-color: #f6f6f6;
+    border-color: #ccc;
+    box-shadow: none;
+}
+
+.player-btn::-moz-focus-inner,
+.player-btn::-moz-focus-outer {
+    border: 0;
+    outline: none;
+}
+
+.player-btn:disabled svg {
+    margin-left: 2px;
+    stroke: #bbb;
+}
+
+.player-btn svg {
+    stroke: #666;
+}
+
+.player-position {
+    color: #777;
+    font-size: .75rem;
+    letter-spacing: .05rem;
+    margin-top: .5rem;
 }

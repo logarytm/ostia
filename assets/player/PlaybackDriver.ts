@@ -27,13 +27,17 @@ export default class PlaybackDriver {
     }
 
     public resume(): void {
-        this.audioElement!.play();
+        this.audioElement?.play();
         this.publishUpdate();
     }
 
     public pause(): void {
         this.audioElement?.pause();
         this.publishUpdate();
+    }
+
+    public isLoaded(): boolean {
+        return this.audioElement !== null;
     }
 
     private getOrCreateAudioElement(uri: string): HTMLAudioElement {
@@ -47,7 +51,7 @@ export default class PlaybackDriver {
             }, false);
 
             this.audioElement.addEventListener('ended', () => {
-                this.emitter.emit('ended', this.status);
+                this.emitter.emit('trackEnd', this.status);
             });
         }
 

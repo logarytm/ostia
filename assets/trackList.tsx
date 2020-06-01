@@ -1,24 +1,18 @@
 import React, { useEffect } from 'react';
 
 import './css/trackList.css';
-import { generateUrl, Route } from './common/Routing';
 import PlaybackDriver from './player/PlaybackDriver';
 import { Emitter } from 'event-kit';
-import { Empty, Loaded, PlaybackEmissions, PlaybackStatus } from './player/PlaybackTypes';
-
-import $ from 'jquery';
+import { Empty, PlaybackEmissions, PlaybackStatus } from './player/PlaybackTypes';
 import Duration, { DurationData } from './common/Duration';
 import { render } from 'react-dom';
 import TrackListView from './tracks/TrackListView';
 import { Track } from './tracks/TrackTypes';
-import Player from './player/Player';
+import PlayerControls from './player/PlayerControls';
+import TrackListPlaybackController from './player/TrackListPlaybackController';
 
 const emitter = new Emitter<PlaybackEmissions, PlaybackEmissions>();
 const driver = new PlaybackDriver(emitter);
-
-function playAudioFile(uri: string) {
-    driver.play(uri);
-}
 
 type TrackData = {
     id: string;
@@ -35,45 +29,37 @@ const tracksFromServer: Track[] = __tracks.map((trackData, index) => new Track(
     Duration.fromSeconds(trackData.duration.totalSeconds),
 ));
 
+const controller = new TrackListPlaybackController(emitter, driver, tracksFromServer);
+
 const TrackListPage: React.FC = () => {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
-    const [tracks, setTracks] = React.useState<Track[]>(tracksFromServer);
+    const [tracks] = React.useState<Track[]>(tracksFromServer);
     const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
 
     useEffect(() => {
-        const subscription = emitter.on('ended', (status: PlaybackStatus) => {
-            setStatus(status);
-
-            if (currentTrack !== null) {
-                const nextTrackIndex = currentTrack.index + 1;
-                if (nextTrackIndex < tracks.length) {
-                    console.log(currentTrack.index, nextTrackIndex, tracks.length, tracks[nextTrackIndex]);
-                    onPlayRequest(tracks[nextTrackIndex]);
-                } else {
-                    setCurrentTrack(null);
-                }
-            }
+        const trackChangeSubscription = emitter.on('trackChange', (track: Track) => {
+            setCurrentTrack(track);
         });
 
-        return () => subscription.dispose();
+        const statusSubscription = emitter.on('status', (status: PlaybackStatus) => {
+            setStatus(status);
+        });
+
+        // TODO: introduce a helper to merge subscriptions
+        return () => {
+            trackChangeSubscription.dispose();
+            statusSubscription.dispose();
+        };
     });
 
-    function onPlayRequest(track: Track): void {
-        $.ajax({
-            url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }),
-            type: 'get',
-            dataType: 'json',
-            success: (data) => {
-                setCurrentTrack(track);
-                playAudioFile(data.preferred);
-            },
-        });
+    function play(track: Track): void {
+        controller.play(track);
     }
 
     return (
         <>
-            <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={onPlayRequest}/>
-            <Player driver={driver} emitter={emitter} tracks={tracks}/>
+            <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={play}/>
+            <PlayerControls controller={controller} emitter={emitter} tracks={tracks} currentTrack={currentTrack}/>
         </>
     );
 };
