@@ -30,6 +30,8 @@ the user navigates to a different page.
 
 ## How to run it
 
+You need to have `ffmpeg` and `ffprobe` installed in your PATH.
+
 First, create an `.env.local` file and set a proper `DATABASE_URL` (template is
 in `.env`).
 
