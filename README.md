@@ -7,5 +7,18 @@ it already plays songs!
 
 Of course, I'm not responsible for any illegal use.  Use common sense.
 
-Name chosen after a random song from my library.  [Content warning for murder or
-something](https://www.youtube.com/watch?v=J48cbIJAmrY).
+## Screenshots
+
+The UI will change, too.
+
+![Uploading files](docs/upload.png)
+
+Uploading files.
+
+![Reviewing tracks](docs/review.png)
+
+Finalizing upload.  One day, you will be able to tag your music here.
+
+![Track library](docs/library.png)
+
+Track library.  You can play songs and not much more.
