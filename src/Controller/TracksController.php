@@ -68,7 +68,6 @@ final class TracksController extends AbstractController
         }
 
         if (is_array($uploadedFile)) {
-            // FUCK YOU SYMFONY FOR YOUR BROKEN $_FILES PARSING LOGIC
             $uploadedFile = new UploadedFile(
                 $uploadedFile['tmp_name'],
                 $uploadedFile['name'],
