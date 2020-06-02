@@ -169,3 +169,10 @@
     letter-spacing: .05rem;
     margin-top: .5rem;
 }
+
+.track-list-item-play-button {
+    
+}
+
+.track-list-item-play-button:focus {
+}

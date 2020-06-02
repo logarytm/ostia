@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TrackUpload;
+use App\Entity\User;
 use App\Exception\UploadNotFoundException;
 use App\ViewModel\TrackToReview;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -34,7 +35,7 @@ class TrackUploadRepository extends ServiceEntityRepository
     public function getByIds(UuidInterface ...$ids): array
     {
         return $this->_em
-            ->createQuery('SELECT tu FROM App\Entity\TrackUpload tu WHERE tu.id IN (:ids)')
+            ->createQuery('SELECT tu FROM App\Entity\TrackUpload tu WHERE tu.id IN (:ids) ORDER BY tu.ordering')
             ->setParameter(':ids', $ids)
             ->getResult();
     }
@@ -56,6 +57,15 @@ class TrackUploadRepository extends ServiceEntityRepository
         }
 
         return $trackFile;
+    }
+
+    public function getEndPosition(User $user): int
+    {
+        return (int)$this->_em
+            ->getConnection()
+            ->fetchColumn('SELECT MAX(t.position) + 1 FROM track t WHERE t.user_id = :user_id', [
+                ':user_id' => $user->getId(),
+            ]);
     }
 
     /** @return TrackToReview[] */

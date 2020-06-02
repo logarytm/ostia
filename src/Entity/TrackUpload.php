@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TrackUploadRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Form\Exception\LogicException;
@@ -33,11 +34,23 @@ class TrackUpload
      */
     private TrackMetadata $metadata;
 
-    public function __construct(UuidInterface $id, string $name)
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private DateTimeImmutable $dateCreated;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private float $ordering;
+
+    public function __construct(UuidInterface $id, string $name, DateTimeImmutable $dateCreated, float $ordering)
     {
         $this->id = $id;
         $this->name = $name;
         $this->metadata = new TrackMetadata();
+        $this->dateCreated = $dateCreated;
+        $this->ordering = $ordering;
     }
 
     public function getId(): UuidInterface
@@ -53,6 +66,11 @@ class TrackUpload
     public function getMetadata(): TrackMetadata
     {
         return $this->metadata;
+    }
+
+    public function getOrdering(): float
+    {
+        return $this->ordering;
     }
 
     public function getDuration(): Duration

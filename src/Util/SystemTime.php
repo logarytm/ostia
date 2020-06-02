@@ -7,7 +7,7 @@ namespace App\Util;
 use DateTimeImmutable;
 use DateTimeZone;
 
-final class DateTimeHelper
+final class SystemTime
 {
     private function __construct()
     {

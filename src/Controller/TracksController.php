@@ -11,9 +11,8 @@ use App\Repository\TrackRepository;
 use App\Repository\TrackUploadRepository;
 use App\Storage\Catalogs;
 use App\Storage\Storage;
-use App\Util\DateTimeHelper;
-use App\ViewModel\TrackToReview;
-use DateTimeImmutable;
+use App\Util\MonotonicClock;
+use App\Util\SystemTime;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -78,7 +77,12 @@ final class TracksController extends AbstractController
 
         $uploadedFile->move($this->getParameter('app.temporary_dir'), $uuid->toString());
 
-        $upload = new TrackUpload($uuid, $uploadedFile->getClientOriginalName());
+        $upload = new TrackUpload(
+            $uuid,
+            $uploadedFile->getClientOriginalName(),
+            SystemTime::utcNow(),
+            MonotonicClock::nanoseconds()
+        );
         $this->trackUploads->add($upload);
         $bus->dispatch(new PrepareTrackFile($uuid));
 
@@ -119,7 +123,8 @@ final class TracksController extends AbstractController
             $this->user(),
             pathinfo($upload->getFilename(), PATHINFO_BASENAME),
             $upload->getDuration(),
-            DateTimeHelper::utcNow()
+            $this->tracks->getEndPosition($this->user()),
+            SystemTime::utcNow()
         );
         $this->tracks->add($track);
         $this->storage->saveToPersistentStorage($track, $upload);

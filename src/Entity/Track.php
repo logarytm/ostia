@@ -36,6 +36,11 @@ class Track
     private DateTimeImmutable $dateCreated;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private int $ordering;
+
+    /**
      * @ORM\ManyToMany(targetEntity=Playlist::class, inversedBy="tracks")
      */
     private Collection $playlists;
@@ -56,6 +61,7 @@ class Track
         User $user,
         string $title,
         Duration $duration,
+        int $ordering,
         DateTimeImmutable $dateCreated
     ) {
         $this->id = $id;
@@ -63,6 +69,7 @@ class Track
         $this->title = $title;
         $this->duration = $duration;
         $this->dateCreated = $dateCreated;
+        $this->ordering = $ordering;
         $this->playlists = new ArrayCollection();
         $this->metadata = new TrackMetadata();
     }
