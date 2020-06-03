@@ -26,6 +26,9 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, sta
                          onDoubleClick={handleDoubleClick} key={track.id}
                          data-id={track.id}>
                         <div className="track-list-item-status">
+                            <button type="button" className="track-list-item-play-button sr-only focusable">
+                                Play this song
+                            </button>
                             {track.equals(currentTrack)
                                 ? (
                                     (status as Loaded).paused

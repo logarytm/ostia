@@ -1,9 +1,10 @@
-import { PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
+import { Loaded, PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import PlaybackDriver from './PlaybackDriver';
 import { Track } from '../tracks/TrackTypes';
 import { generateUrl, Route } from '../common/Routing';
 import { DisposableLike } from 'event-kit';
 import $ from 'jquery';
+import Duration from '../common/Duration';
 
 export default class TrackListPlaybackController implements PlaybackController {
     private currentTrack: Track | null;
@@ -61,6 +62,18 @@ export default class TrackListPlaybackController implements PlaybackController {
 
     public reset(): void {
         this.changeCurrentTrack(null);
+    }
+
+    public seek(newPosition: Duration): Promise<boolean> {
+        const status = this.driver.status;
+
+        if (!(status instanceof Loaded)) {
+            return Promise.resolve(false);
+        }
+
+        if (newPosition.isWithinTotalDuration(status.totalDuration)) {
+            this.driver.seek(newPosition);
+        }
     }
 
     private changeCurrentTrack(newTrack: Track | null) {

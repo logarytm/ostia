@@ -89,10 +89,10 @@ class UploadView extends React.Component<{}, UploadViewState> {
     private renderProceed(): ReactNode {
         return (
             <div className="upload-proceed">
-                <button className="btn" type="button" onClick={() => {
+                <button className="button" type="button" onClick={() => {
                     this.handleProceedClick();
                 }} disabled={!this.canProceed}>
-                    <span className="btn-icon">
+                    <span className="button-icon">
                         <ArrowRight/>
                     </span>
                     Next: Tags

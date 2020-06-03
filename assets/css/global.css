@@ -69,11 +69,11 @@ body, button, input, textarea, select {
     width: 100%;
 }
 
-.form .btn[type=submit] {
+.form .button[type=submit] {
     margin-top: 1rem;
 }
 
-.btn-icon svg {
+.button-icon svg {
     width: 16px;
     height: 16px;
     vertical-align: middle;
@@ -82,7 +82,7 @@ body, button, input, textarea, select {
     position: relative;
 }
 
-.btn {
+.button {
     background: #eee;
     border: 1px #999 solid;
     border-radius: 3px;
@@ -101,7 +101,7 @@ input[type=search] {
     padding: .5rem .85rem;
 }
 
-.btn:focus,
+.button:focus,
 input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
@@ -109,7 +109,7 @@ input[type=search]:focus {
     box-shadow: 0 0 2px 3px rgba(0, 0, 0, .2);
 }
 
-.btn[disabled] {
+.button[disabled] {
     cursor: default;
     border-color: #bbb;
     background: #f6f6f6;
@@ -122,8 +122,8 @@ select:-moz-focusring {
     text-shadow: 0 0 0 #000;
 }
 
-.btn::-moz-focus-inner,
-.btn::-moz-focus-outer,
+.button::-moz-focus-inner,
+.button::-moz-focus-outer,
 select::-moz-focus-inner,
 select::-moz-focus-outer {
     border: 0;
@@ -137,4 +137,28 @@ select::-moz-focus-outer {
     margin: 1rem 0;
     border-radius: 4px;
     border: 1px lightblue solid;
+}
+
+
+.sr-only {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.sr-only.focusable:active,
+.sr-only.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    white-space: inherit;
+    width: auto;
 }

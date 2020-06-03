@@ -31,4 +31,5 @@ export type PlaybackController = {
     pause(): Promise<boolean>;
     previous(): Promise<boolean>;
     next(): Promise<boolean>;
+    seek(position: Duration): Promise<boolean>;
 };

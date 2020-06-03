@@ -36,6 +36,16 @@ export default class PlaybackDriver {
         this.publishUpdate();
     }
 
+    public seek(newPosition: Duration): boolean {
+        if (this.audioElement === null) {
+            return false;
+        }
+
+        this.audioElement.currentTime = newPosition.totalSeconds;
+
+        return true;
+    }
+
     public isLoaded(): boolean {
         return this.audioElement !== null;
     }
