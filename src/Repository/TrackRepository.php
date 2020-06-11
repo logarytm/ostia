@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Track;
-use App\Entity\TrackUpload;
 use App\Entity\User;
 use App\ViewModel\TrackList;
 use App\ViewModel\TrackListItem;
@@ -29,12 +28,21 @@ class TrackRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
+    public function getEndPosition(User $user): int
+    {
+        return (int)$this->_em
+            ->getConnection()
+            ->fetchColumn('SELECT MAX(t.ordering) + 1 FROM track t WHERE t.user_id = :user_id', [
+                ':user_id' => $user->getId(),
+            ]);
+    }
+
     /**
      * @return TrackList
      */
     public function all(User $user): TrackList
     {
-        $tracks = $this->findBy(['user' => $user], ['dateCreated' => 'ASC']);
+        $tracks = $this->findBy(['user' => $user], ['ordering' => 'ASC', 'dateCreated' => 'ASC']);
         $items = array_map([TrackListItem::class, 'fromEntity'], $tracks);
 
         return new TrackList(...$items);
