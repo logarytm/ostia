@@ -10,6 +10,7 @@ import TrackListView from './tracks/TrackListView';
 import { Track } from './tracks/TrackTypes';
 import PlayerControls from './player/PlayerControls';
 import TrackListPlaybackController from './player/TrackListPlaybackController';
+import TrackListActions from './tracks/TrackListActions';
 
 const emitter = new Emitter<PlaybackEmissions, PlaybackEmissions>();
 const driver = new PlaybackDriver(emitter);
@@ -58,6 +59,7 @@ const TrackListPage: React.FC = () => {
 
     return (
         <>
+            <TrackListActions status={status}/>
             <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={play}/>
             <PlayerControls controller={controller} emitter={emitter} tracks={tracks} currentTrack={currentTrack}/>
         </>

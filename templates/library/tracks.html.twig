@@ -13,12 +13,9 @@
                 <div class="track-list-items">
                     {% for index, track in tracks %}
                         <div class="track-list-item track-list-item-prerendered" data-id="{{ track.id }}">
-                            <button class="track-list-item-play-button" type="button">
-                                {% trans %}Play{% endtrans %}
-                            </button>
                             <div class="track-list-item-status">
                                 <div class="track-list-item-number">
-                                    {{ index + 1 }}.
+                                    {{ index + 1 }}
                                 </div>
                             </div>
                             <div class="track-list-item-info">

@@ -45,7 +45,7 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, sta
                                 )
                                 : (
                                     <div className="track-list-item-number">
-                                        {index + 1}.
+                                        {index + 1}
                                     </div>
                                 )}
                         </div>
