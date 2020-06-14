@@ -63,7 +63,7 @@ final class TracksController extends AbstractController
         $uploadedFile = $request->files->get('file');
 
         if (!$uploadedFile) {
-            return $this->createBadRequestResponse('file_not_uploaded', 'File not uploaded');
+            return $this->createBadRequestJsonResponse('file_not_uploaded', 'File not uploaded');
         }
 
         if (is_array($uploadedFile)) {
@@ -111,11 +111,11 @@ final class TracksController extends AbstractController
         $upload = $this->trackUploads->getById($id);
 
         if (!$upload) {
-            return $this->createBadRequestResponse('not_found', 'Uploaded file not found');
+            return $this->createBadRequestJsonResponse('not_found', 'Uploaded file not found');
         }
 
         if (!$upload->isReady()) {
-            return $this->createBadRequestResponse('not_ready', 'Track is not ready');
+            return $this->createBadRequestJsonResponse('not_ready', 'Track is not ready');
         }
 
         $track = new Track(
@@ -141,14 +141,6 @@ final class TracksController extends AbstractController
         return new JsonResponse([
             'preferred' => $this->storage->getUrl(Catalogs::TRACKS, Uuid::fromString($id)),
         ]);
-    }
-
-    private function createBadRequestResponse(string $reason, string $message): JsonResponse
-    {
-        return new JsonResponse([
-            'reason' => $reason,
-            'message' => $message,
-        ], 400);
     }
 
     private function getUuidsFromQuery(Request $request): array
