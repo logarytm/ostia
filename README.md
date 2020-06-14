@@ -36,12 +36,11 @@ First, create an `.env.local` file and set a proper `DATABASE_URL` (template is
 in `.env`).
 
 ```sh
-$ composer install
-$ npm install
-$ npm run build
-$ mkdir -p var/uploads/temporary
-$ bin/console doctrine:migrations:migrate
-$ bin/server
+composer install
+npm install
+npm run build
+php bin/console doctrine:migrations:migrate
+bin/server # or php -S 127.0.0.1:8000 -t public/ on Windows
 # Go to http://localhost:8000/register to create an account
 ```
 
