@@ -18,7 +18,7 @@ final class TrackToReview
     private ?array $albumArtists;
     private ?string $album;
     private ?int $trackNo;
-    private $status;
+    private string $status;
 
     public function __construct(
         UuidInterface $id,

@@ -19,23 +19,23 @@ class Playlist
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="playlists")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private User $user;
 
     /**
      * @ORM\ManyToMany(targetEntity=Track::class, mappedBy="playlists")
      */
-    private $tracks;
+    private Collection $tracks;
 
     public function __construct()
     {
