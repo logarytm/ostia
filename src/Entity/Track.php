@@ -31,6 +31,12 @@ class Track
     private string $title;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Album::class, inversedBy="tracks")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private ?Album $album;
+
+    /**
      * @ORM\Column(type="duration", nullable=true)
      */
     private ?Duration $duration;
@@ -39,6 +45,12 @@ class Track
      * @ORM\Column(type="datetime_immutable")
      */
     private DateTimeImmutable $dateCreated;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="tracks")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private ?Genre $genre;
 
     /**
      * @ORM\Column(type="integer")
@@ -56,21 +68,70 @@ class Track
     private int $status;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $trackNo;
+
+    /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tracks")
      * @ORM\JoinColumn(nullable=false)
      */
     private User $user;
 
-    /**
-     * @ORM\Embedded(class=TrackMetadata::class)
-     */
-    private TrackMetadata $metadata;
-
-    public function __construct(
+    public static function create(
         UuidInterface $id,
         User $user,
         string $title,
+        Album $album,
+        Duration $duration,
+        ?Genre $genre,
+        ?int $trackNo,
+        int $ordering,
+        DateTimeImmutable $dateCreated
+    ) {
+        return new self(
+            $id,
+            $user,
+            $title,
+            $album,
+            $duration,
+            $genre,
+            $trackNo,
+            $ordering,
+            $dateCreated,
+            self::STATUS_REVIEWED
+        );
+    }
+
+    public static function createUpload(
+        UuidInterface $id,
+        User $user,
+        string $title,
+        int $ordering,
+        DateTimeImmutable $dateCreated
+    ) {
+        return new self(
+            $id,
+            $user,
+            $title,
+            null,
+            null,
+            null,
+            null,
+            $ordering,
+            $dateCreated,
+            self::STATUS_UPLOADED
+        );
+    }
+
+    private function __construct(
+        UuidInterface $id,
+        User $user,
+        string $title,
+        ?Album $album,
         ?Duration $duration,
+        ?Genre $genre,
+        ?int $trackNo,
         int $ordering,
         DateTimeImmutable $dateCreated,
         int $status
@@ -78,12 +139,14 @@ class Track
         $this->id = $id;
         $this->user = $user;
         $this->title = $title;
+        $this->album = $album;
         $this->duration = $duration;
         $this->dateCreated = $dateCreated;
+        $this->genre = $genre;
         $this->ordering = $ordering;
         $this->playlists = new ArrayCollection();
-        $this->metadata = new TrackMetadata();
         $this->status = $status;
+        $this->trackNo = $trackNo;
     }
 
     public function getId(): UuidInterface
@@ -99,6 +162,16 @@ class Track
     public function rename(string $newTitle): void
     {
         $this->title = $newTitle;
+    }
+
+    public function getAlbum(): ?Album
+    {
+        return $this->album;
+    }
+
+    public function setAlbum(Album $album): void
+    {
+        $this->album = $album;
     }
 
     public function getDuration(): Duration
@@ -121,9 +194,9 @@ class Track
         return $this->dateCreated;
     }
 
-    public function getMetadata(): TrackMetadata
+    public function getGenre(): ?Genre
     {
-        return $this->metadata;
+        return $this->genre;
     }
 
     public function addToPlaylist(Playlist $playlist): self
@@ -152,6 +225,11 @@ class Track
     public function setStatus(int $status): void
     {
         $this->status = $status;
+    }
+
+    public function getTrackNo(): ?int
+    {
+        return $this->trackNo;
     }
 
     public function isUploadReady(): bool

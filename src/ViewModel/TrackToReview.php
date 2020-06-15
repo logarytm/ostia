@@ -14,7 +14,6 @@ final class TrackToReview
     private UuidInterface $id;
     private string $filename;
     private ?string $title;
-    private ?array $artists;
     private ?array $albumArtists;
     private ?string $album;
     private ?int $trackNo;
@@ -24,7 +23,6 @@ final class TrackToReview
         UuidInterface $id,
         string $filename,
         ?string $title,
-        ?array $artists,
         ?array $albumArtists,
         ?string $album,
         ?int $trackNo
@@ -32,7 +30,6 @@ final class TrackToReview
         $this->id = $id;
         $this->filename = $filename;
         $this->title = $title;
-        $this->artists = $artists;
         $this->albumArtists = $albumArtists;
         $this->album = $album;
         $this->trackNo = $trackNo;
@@ -47,11 +44,6 @@ final class TrackToReview
     public function getFilename(): string
     {
         return $this->filename;
-    }
-
-    public function getArtists(): ?array
-    {
-        return $this->artists;
     }
 
     public function getAlbumArtists(): ?array
@@ -79,11 +71,10 @@ final class TrackToReview
         return new self(
             $upload->getId(),
             $upload->getTitle(),
-            $upload->getMetadata()->title,
-            $upload->getMetadata()->artists,
-            $upload->getMetadata()->albumArtists,
-            $upload->getMetadata()->album,
-            $upload->getMetadata()->trackNo
+            $upload->getTitle(), // @fixme
+            $upload->getAlbum() !== null ? $upload->getAlbum()->getArtists() : [],
+            $upload->getAlbum() !== null ? $upload->getAlbum()->getTitle() : null,
+            $upload->getTrackNo()
         );
     }
 }

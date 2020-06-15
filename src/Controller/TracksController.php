@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Album;
+use App\Entity\Artist;
 use App\Entity\Track;
 use App\Exception\UploadNotFoundException;
 use App\Message\PrepareTrackFile;
+use App\Repository\AlbumRepository;
 use App\Repository\TrackRepository;
 use App\Storage\Catalogs;
 use App\Storage\Storage;
@@ -27,15 +30,18 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class TracksController extends AbstractController
 {
     private TrackRepository $tracks;
+    private AlbumRepository $albums;
     private Storage $storage;
     private SerializerInterface $serializer;
 
     public function __construct(
         TrackRepository $tracks,
+        AlbumRepository $albums,
         Storage $storage,
         SerializerInterface $serializer
     ) {
         $this->tracks = $tracks;
+        $this->albums = $albums;
         $this->storage = $storage;
         $this->serializer = $serializer;
     }
@@ -72,14 +78,12 @@ final class TracksController extends AbstractController
 
         $uploadedFile->move($this->getParameter('app.temporary_dir'), $uuid->toString());
 
-        $upload = new Track(
+        $upload = Track::createUpload(
             $uuid,
             $this->user(),
             $uploadedFile->getClientOriginalName(),
-            null,
             $this->tracks->getEndPosition($this->user(), Track::STATUS_UPLOADED),
-            SystemTime::utcNow(),
-            Track::STATUS_UPLOADED
+            SystemTime::utcNow()
         );
         $this->tracks->add($upload);
         $bus->dispatch(new PrepareTrackFile($uuid));
@@ -116,14 +120,26 @@ final class TracksController extends AbstractController
             return $this->createBadRequestJsonResponse('not_ready', 'Track is not ready');
         }
 
-        $track = new Track(
+        // Create new album if the album is not set
+        $album = $upload->getAlbum();
+        if ($album === null) {
+            $albumArtist = new Artist(Uuid::uuid4(), null);
+            $album = new Album(Uuid::uuid4(), null);
+            $album->addArtist($albumArtist);
+
+            $this->albums->add($album);
+        }
+
+        $track = Track::create(
             Uuid::uuid4(),
             $this->user(),
             pathinfo($upload->getTitle(), PATHINFO_BASENAME),
+            $album,
             $upload->getDuration(),
+            $upload->getGenre(),
+            $upload->getTrackNo(),
             $this->tracks->getEndPosition($this->user(), Track::STATUS_REVIEWED),
             SystemTime::utcNow(),
-            Track::STATUS_REVIEWED,
         );
         $this->tracks->add($track);
 
