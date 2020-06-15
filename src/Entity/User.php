@@ -46,7 +46,7 @@ class User implements UserInterface
     private Collection $playlists;
 
     /**
-     * @ORM\OneToMany(targetEntity=Track::class, mappedBy="user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=TrackBase::class, mappedBy="user", orphanRemoval=true)
      */
     private Collection $tracks;
 

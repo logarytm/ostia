@@ -8,7 +8,7 @@ use App\Entity\Duration;
 use App\Entity\TrackUpload;
 use App\Exception\UploadNotFoundException;
 use App\Message\PrepareTrackFile;
-use App\Repository\TrackUploadRepository;
+use App\Repository\TrackRepository;
 use App\Storage\Storage;
 use FFMpeg\FFProbe;
 use Psr\Log\LoggerInterface;
@@ -16,13 +16,13 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 final class PrepareTrackFileHandler implements MessageHandlerInterface
 {
-    private TrackUploadRepository $trackFiles;
+    private TrackRepository $tracks;
     private Storage $storage;
     private LoggerInterface $logger;
 
-    public function __construct(TrackUploadRepository $trackFiles, Storage $storage, LoggerInterface $logger)
+    public function __construct(TrackRepository $tracks, Storage $storage, LoggerInterface $logger)
     {
-        $this->trackFiles = $trackFiles;
+        $this->tracks = $tracks;
         $this->storage = $storage;
         $this->logger = $logger;
     }
@@ -30,7 +30,7 @@ final class PrepareTrackFileHandler implements MessageHandlerInterface
     public function __invoke(PrepareTrackFile $message)
     {
         try {
-            $trackFile = $this->trackFiles->getById($message->getTrackFileId());
+            $trackFile = $this->tracks->getTrackUploadById($message->getTrackFileId());
             $this->computeDuration($trackFile);
         } catch (UploadNotFoundException $e) {
             $this->logger->warning('Track with UUID {uuid} not found.', [

@@ -6,12 +6,11 @@ namespace App\Controller;
 
 use App\Entity\Track;
 use App\Entity\TrackUpload;
+use App\Exception\UploadNotFoundException;
 use App\Message\PrepareTrackFile;
 use App\Repository\TrackRepository;
-use App\Repository\TrackUploadRepository;
 use App\Storage\Catalogs;
 use App\Storage\Storage;
-use App\Util\MonotonicClock;
 use App\Util\SystemTime;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,18 +28,15 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class TracksController extends AbstractController
 {
     private TrackRepository $tracks;
-    private TrackUploadRepository $trackUploads;
     private Storage $storage;
     private SerializerInterface $serializer;
 
     public function __construct(
         TrackRepository $tracks,
-        TrackUploadRepository $trackUploads,
         Storage $storage,
         SerializerInterface $serializer
     ) {
         $this->tracks = $tracks;
-        $this->trackUploads = $trackUploads;
         $this->storage = $storage;
         $this->serializer = $serializer;
     }
@@ -79,11 +75,12 @@ final class TracksController extends AbstractController
 
         $upload = new TrackUpload(
             $uuid,
+            $this->user(),
             $uploadedFile->getClientOriginalName(),
-            SystemTime::utcNow(),
-            MonotonicClock::nanoseconds()
+            $this->tracks->getEndPosition($this->user(), TrackUpload::STATUS_UPLOADED),
+            SystemTime::utcNow()
         );
-        $this->trackUploads->add($upload);
+        $this->tracks->add($upload);
         $bus->dispatch(new PrepareTrackFile($uuid));
 
         return new JsonResponse(['uuid' => $uuid->toString()], 201);
@@ -95,7 +92,7 @@ final class TracksController extends AbstractController
     public function reviewAction(Request $request): Response
     {
         $uuids = $this->getUuidsFromQuery($request);
-        $tracksToReview = $this->trackUploads->getTracksToReview(...$uuids);
+        $tracksToReview = $this->tracks->getTracksToReview(...$uuids);
 
         return $this->render('tracks/review.html.twig', [
             'tracks_to_review_json' => $this->serializer->serialize($tracksToReview, 'json'),
@@ -108,27 +105,27 @@ final class TracksController extends AbstractController
     public function addToLibraryAction(Request $request): Response
     {
         $id = Uuid::fromString($request->request->get('id'));
-        $upload = $this->trackUploads->getById($id);
+        $upload = $this->tracks->getTrackUploadById($id);
 
         if (!$upload) {
             return $this->createBadRequestJsonResponse('not_found', 'Uploaded file not found');
         }
 
-        if (!$upload->isReady()) {
+        if (!$upload->isUploadReady()) {
             return $this->createBadRequestJsonResponse('not_ready', 'Track is not ready');
         }
 
         $track = new Track(
             Uuid::uuid4(),
             $this->user(),
-            pathinfo($upload->getFilename(), PATHINFO_BASENAME),
+            pathinfo($upload->getTitle(), PATHINFO_BASENAME),
             $upload->getDuration(),
-            $this->tracks->getEndPosition($this->user()),
+            $this->tracks->getEndPosition($this->user(), Track::STATUS_REVIEWED),
             SystemTime::utcNow()
         );
         $this->tracks->add($track);
         $this->storage->saveToPersistentStorage($track, $upload);
-        $this->trackUploads->remove($upload);
+        $this->tracks->remove($upload);
 
         return new JsonResponse([], 201);
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\ViewModel;
 
-use App\Entity\TrackUpload;
+use App\Entity\TrackBase;
 use Ramsey\Uuid\UuidInterface;
 
 final class TrackToReview
@@ -74,11 +74,11 @@ final class TrackToReview
         return $this->status;
     }
 
-    public static function fromUpload(TrackUpload $upload): TrackToReview
+    public static function fromUpload(TrackBase $upload): TrackToReview
     {
         return new self(
             $upload->getId(),
-            $upload->getFilename(),
+            $upload->getTitle(),
             $upload->getMetadata()->title,
             $upload->getMetadata()->artists,
             $upload->getMetadata()->albumArtists,

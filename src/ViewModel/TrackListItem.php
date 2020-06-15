@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\ViewModel;
 
 use App\Entity\Duration;
-use App\Entity\Track;
+use App\Entity\TrackBase;
 use Ramsey\Uuid\UuidInterface;
 
 final class TrackListItem
@@ -24,7 +24,7 @@ final class TrackListItem
         $this->duration = $duration;
     }
 
-    public static function fromEntity(Track $track): self
+    public static function fromEntity(TrackBase $track): self
     {
         return new TrackListItem(
             $track->getId(),

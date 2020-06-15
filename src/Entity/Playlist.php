@@ -33,7 +33,7 @@ class Playlist
     private User $user;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Track::class, mappedBy="playlists")
+     * @ORM\ManyToMany(targetEntity=TrackBase::class, mappedBy="playlists")
      */
     private Collection $tracks;
 
