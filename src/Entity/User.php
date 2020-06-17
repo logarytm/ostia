@@ -30,7 +30,7 @@ class User implements UserInterface
     private string $username = '';
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="array")
      */
     private array $roles = [];
 
