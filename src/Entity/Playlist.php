@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
+ * @ORM\Table(name="playlists")
  */
 class Playlist
 {

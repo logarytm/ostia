@@ -74,7 +74,7 @@ class TrackRepository extends ServiceEntityRepository
     {
         return (int)$this->_em
             ->getConnection()
-            ->fetchColumn('SELECT MAX(t.ordering) + 1 FROM track t WHERE t.user_id = :user_id AND status = :status', [
+            ->fetchColumn('SELECT MAX(t.ordering) + 1 FROM tracks t WHERE t.user_id = :user_id AND status = :status', [
                 ':user_id' => $user->getId(),
                 'status' => $status,
             ]);

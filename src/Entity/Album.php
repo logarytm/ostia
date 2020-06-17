@@ -12,6 +12,7 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Entity(repositoryClass=AlbumRepository::class)
+ * @ORM\Table(name="albums")
  */
 class Album
 {

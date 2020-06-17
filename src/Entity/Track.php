@@ -13,6 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Entity(repositoryClass=TrackRepository::class)
+ * @ORM\Table(name="tracks")
  */
 class Track
 {
