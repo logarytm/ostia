@@ -8,13 +8,6 @@
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                {% trans with {'%username%': app.user.username} %}You are logged in as %username%.{% endtrans %}
-                <a href="{{ path('app_logout') }}">{% trans %}Log out{% endtrans %}</a>
-            </div>
-        {% endif %}
-
         <h1 class="h3 mb-3 font-weight-normal">{% trans %}Please sign in{% endtrans %}</h1>
         <div>
             <label for="inputUsername">{% trans %}Username{% endtrans %}</label>
