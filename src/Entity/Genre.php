@@ -28,7 +28,7 @@ class Genre
     private string $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Genre::class, mappedBy="genre", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Track::class, mappedBy="genre", orphanRemoval=true)
      */
     private Collection $tracks;
 
