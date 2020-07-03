@@ -5,7 +5,7 @@
 {% block body %}
     <form class="form wrap" method="post">
         {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            <div class="help alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
 
         <h1 class="h3 mb-3 font-weight-normal">{% trans %}Please sign in{% endtrans %}</h1>
@@ -38,5 +38,9 @@
         <button class="button" type="submit">
             {% trans %}Sign in{% endtrans %}
         </button>
+
+        {% if registration_enabled %}
+            <a class="register-link" href="{{ url('app_register') }}">{% trans %}Register new account »{% endtrans %}</a>
+        {% endif %}
     </form>
 {% endblock %}

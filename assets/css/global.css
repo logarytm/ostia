@@ -43,6 +43,10 @@ body, button, input, textarea, select {
     text-transform: uppercase;
 }
 
+.register-link {
+    margin-left: 1rem;
+}
+
 @supports (display: flex) {
     .form-checkbox {
         align-items: center;
