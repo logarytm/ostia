@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% trans %}Registration disabled{% endtrans %}
+{% endblock %}
+
+{% block body %}
+    <div class="wrap">
+        <h1>{% trans %}Registration disabled{% endtrans %}</h1>
+        <p>{% trans %}Sorry, creating new accounts is disabled by administrator.{% endtrans %}</p>
+        <p><a class="button" href="{{ url('app_login') }}">Back to login</a></p>
+    </div>
+{% endblock %}
