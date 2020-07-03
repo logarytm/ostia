@@ -15,11 +15,22 @@ use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 class RegistrationController extends AbstractController
 {
+    private bool $registrationEnabled;
+
+    public function __construct(bool $registrationEnabled)
+    {
+        $this->registrationEnabled = $registrationEnabled;
+    }
+
     /**
      * @Route("/register", name="app_register")
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator): Response
     {
+        if (!$this->registrationEnabled) {
+            return $this->renderRegistrationDisabled();
+        }
+
         if ($this->user() !== null) {
             return $this->redirect('/');
         }
@@ -52,5 +63,10 @@ class RegistrationController extends AbstractController
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
+    }
+
+    private function renderRegistrationDisabled(): Response
+    {
+        return new Response($this->renderView('registration/disabled.html.twig'), 400);
     }
 }

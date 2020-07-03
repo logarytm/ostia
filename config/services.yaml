@@ -7,6 +7,7 @@ parameters:
     app.persistent_url: '/uploads'
     app.persistent_dir: '%kernel.project_dir%/public/uploads'
     app.temporary_dir: '%kernel.project_dir%/var/uploads/temporary'
+    app.registration_enabled: '%env(bool:REGISTRATION_ENABLED)%'
 
 services:
     # default configuration for services in *this* file
@@ -25,6 +26,10 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    App\Controller\RegistrationController:
+        arguments:
+            $registrationEnabled: '%app.registration_enabled%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
