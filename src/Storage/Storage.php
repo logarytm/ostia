@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Storage;
 
 use App\Entity\Track;
-use App\Entity\TrackUpload;
+use App\Exception\UploadNotFoundException;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -27,10 +27,14 @@ class Storage
         return sprintf('%s/%s', $this->temporaryDir, $uuid->toString());
     }
 
-    public function saveToPersistentStorage(Track $track, TrackUpload $trackFile): void
+    public function saveToPersistentStorage(Track $track, Track $trackUpload): void
     {
+        if ($trackUpload->getStatus() !== Track::STATUS_UPLOADED) {
+            throw new UploadNotFoundException();
+        }
+
         (new Filesystem())->rename(
-            $this->getTemporaryFilePath($trackFile->getId()),
+            $this->getTemporaryFilePath($trackUpload->getId()),
             $this->getAudioFilePath($track)
         );
     }

@@ -2,9 +2,6 @@
     "alchemy/binary-driver": {
         "version": "v5.2.0"
     },
-    "beberlei/assert": {
-        "version": "v3.2.7"
-    },
     "brick/math": {
         "version": "0.8.15"
     },
@@ -201,9 +198,6 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
-    "psr/link": {
-        "version": "1.0.0"
-    },
     "psr/log": {
         "version": "1.1.3"
     },
@@ -236,6 +230,9 @@
         "files": [
             "config/packages/sensio_framework_extra.yaml"
         ]
+    },
+    "symfony/amqp-messenger": {
+        "version": "v5.1.2"
     },
     "symfony/asset": {
         "version": "v5.0.8"
@@ -286,8 +283,14 @@
     "symfony/dependency-injection": {
         "version": "v5.0.8"
     },
+    "symfony/deprecation-contracts": {
+        "version": "v2.1.2"
+    },
     "symfony/doctrine-bridge": {
         "version": "v5.0.8"
+    },
+    "symfony/doctrine-messenger": {
+        "version": "v5.1.2"
     },
     "symfony/dom-crawler": {
         "version": "v5.0.8"
@@ -303,9 +306,6 @@
     },
     "symfony/event-dispatcher-contracts": {
         "version": "v2.0.1"
-    },
-    "symfony/expression-language": {
-        "version": "v5.0.8"
     },
     "symfony/filesystem": {
         "version": "v5.0.8"
@@ -347,12 +347,6 @@
             "src/Controller/.gitignore",
             "src/Kernel.php"
         ]
-    },
-    "symfony/http-client": {
-        "version": "v5.0.8"
-    },
-    "symfony/http-client-contracts": {
-        "version": "v2.1.1"
     },
     "symfony/http-foundation": {
         "version": "v5.0.8"
@@ -419,18 +413,6 @@
             "config/packages/test/monolog.yaml"
         ]
     },
-    "symfony/notifier": {
-        "version": "5.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "5.0",
-            "ref": "c31585e252b32fe0e1f30b1f256af553f4a06eb9"
-        },
-        "files": [
-            "config/packages/notifier.yaml"
-        ]
-    },
     "symfony/options-resolver": {
         "version": "v5.0.8"
     },
@@ -467,7 +449,7 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.17.0"
     },
-    "symfony/polyfill-php73": {
+    "symfony/polyfill-php80": {
         "version": "v1.17.0"
     },
     "symfony/process": {
@@ -481,6 +463,9 @@
     },
     "symfony/property-info": {
         "version": "v5.0.8"
+    },
+    "symfony/redis-messenger": {
+        "version": "v5.1.2"
     },
     "symfony/routing": {
         "version": "4.2",
@@ -591,9 +576,6 @@
         "version": "v5.0.8"
     },
     "symfony/var-exporter": {
-        "version": "v5.0.8"
-    },
-    "symfony/web-link": {
         "version": "v5.0.8"
     },
     "symfony/web-profiler-bundle": {

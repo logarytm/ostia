@@ -6,7 +6,7 @@ namespace App\Entity;
 
 final class Duration
 {
-    private $seconds;
+    private int $seconds;
 
     private function __construct(int $seconds)
     {

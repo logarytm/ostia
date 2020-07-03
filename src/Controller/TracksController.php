@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Album;
+use App\Entity\Artist;
 use App\Entity\Track;
-use App\Entity\TrackUpload;
+use App\Exception\UploadNotFoundException;
 use App\Message\PrepareTrackFile;
+use App\Repository\AlbumRepository;
 use App\Repository\TrackRepository;
-use App\Repository\TrackUploadRepository;
 use App\Storage\Catalogs;
 use App\Storage\Storage;
-use App\Util\MonotonicClock;
 use App\Util\SystemTime;
 use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -29,18 +30,18 @@ use Symfony\Component\Serializer\SerializerInterface;
 final class TracksController extends AbstractController
 {
     private TrackRepository $tracks;
-    private TrackUploadRepository $trackUploads;
+    private AlbumRepository $albums;
     private Storage $storage;
     private SerializerInterface $serializer;
 
     public function __construct(
         TrackRepository $tracks,
-        TrackUploadRepository $trackUploads,
+        AlbumRepository $albums,
         Storage $storage,
         SerializerInterface $serializer
     ) {
         $this->tracks = $tracks;
-        $this->trackUploads = $trackUploads;
+        $this->albums = $albums;
         $this->storage = $storage;
         $this->serializer = $serializer;
     }
@@ -63,7 +64,7 @@ final class TracksController extends AbstractController
         $uploadedFile = $request->files->get('file');
 
         if (!$uploadedFile) {
-            return $this->createBadRequestResponse('file_not_uploaded', 'File not uploaded');
+            return $this->createBadRequestJsonResponse('file_not_uploaded', 'File not uploaded');
         }
 
         if (is_array($uploadedFile)) {
@@ -77,13 +78,14 @@ final class TracksController extends AbstractController
 
         $uploadedFile->move($this->getParameter('app.temporary_dir'), $uuid->toString());
 
-        $upload = new TrackUpload(
+        $upload = Track::createUpload(
             $uuid,
+            $this->user(),
             $uploadedFile->getClientOriginalName(),
-            SystemTime::utcNow(),
-            MonotonicClock::nanoseconds()
+            $this->tracks->getEndPosition($this->user(), Track::STATUS_UPLOADED),
+            SystemTime::utcNow()
         );
-        $this->trackUploads->add($upload);
+        $this->tracks->add($upload);
         $bus->dispatch(new PrepareTrackFile($uuid));
 
         return new JsonResponse(['uuid' => $uuid->toString()], 201);
@@ -95,7 +97,7 @@ final class TracksController extends AbstractController
     public function reviewAction(Request $request): Response
     {
         $uuids = $this->getUuidsFromQuery($request);
-        $tracksToReview = $this->trackUploads->getTracksToReview(...$uuids);
+        $tracksToReview = $this->tracks->getTracksToReview(...$uuids);
 
         return $this->render('tracks/review.html.twig', [
             'tracks_to_review_json' => $this->serializer->serialize($tracksToReview, 'json'),
@@ -108,27 +110,45 @@ final class TracksController extends AbstractController
     public function addToLibraryAction(Request $request): Response
     {
         $id = Uuid::fromString($request->request->get('id'));
-        $upload = $this->trackUploads->getById($id);
+        $upload = $this->tracks->getById($id);
 
         if (!$upload) {
-            return $this->createBadRequestResponse('not_found', 'Uploaded file not found');
+            return $this->createBadRequestJsonResponse('not_found', 'Uploaded file not found');
         }
 
-        if (!$upload->isReady()) {
-            return $this->createBadRequestResponse('not_ready', 'Track is not ready');
+        if (!$upload->isUploadReady()) {
+            return $this->createBadRequestJsonResponse('not_ready', 'Track is not ready');
         }
 
-        $track = new Track(
+        // Create new album if the album is not set
+        $album = $upload->getAlbum();
+        if ($album === null) {
+            $albumArtist = new Artist(Uuid::uuid4(), null);
+            $album = new Album(Uuid::uuid4(), null);
+            $album->addArtist($albumArtist);
+
+            $this->albums->add($album);
+        }
+
+        $track = Track::create(
             Uuid::uuid4(),
             $this->user(),
-            pathinfo($upload->getFilename(), PATHINFO_BASENAME),
+            pathinfo($upload->getTitle(), PATHINFO_BASENAME),
+            $album,
             $upload->getDuration(),
-            $this->tracks->getEndPosition($this->user()),
-            SystemTime::utcNow()
+            $upload->getGenre(),
+            $upload->getTrackNo(),
+            $this->tracks->getEndPosition($this->user(), Track::STATUS_REVIEWED),
+            SystemTime::utcNow(),
         );
         $this->tracks->add($track);
-        $this->storage->saveToPersistentStorage($track, $upload);
-        $this->trackUploads->remove($upload);
+
+        try {
+            $this->storage->saveToPersistentStorage($track, $upload);
+        } catch (UploadNotFoundException $exception) {
+            return $this->createBadRequestJsonResponse('file_not_uploaded', 'File not uploaded');
+        }
+        $this->tracks->remove($upload);
 
         return new JsonResponse([], 201);
     }
@@ -141,14 +161,6 @@ final class TracksController extends AbstractController
         return new JsonResponse([
             'preferred' => $this->storage->getUrl(Catalogs::TRACKS, Uuid::fromString($id)),
         ]);
-    }
-
-    private function createBadRequestResponse(string $reason, string $message): JsonResponse
-    {
-        return new JsonResponse([
-            'reason' => $reason,
-            'message' => $message,
-        ], 400);
     }
 
     private function getUuidsFromQuery(Request $request): array

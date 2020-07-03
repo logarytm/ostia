@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\PlaylistRepository;
@@ -9,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
+ * @ORM\Table(name="playlists")
  */
 class Playlist
 {
@@ -17,23 +20,23 @@ class Playlist
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="playlists")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private User $user;
 
     /**
      * @ORM\ManyToMany(targetEntity=Track::class, mappedBy="playlists")
      */
-    private $tracks;
+    private Collection $tracks;
 
     public function __construct()
     {
