@@ -11,6 +11,7 @@ import { Track } from './tracks/TrackTypes';
 import PlayerControls from './player/PlayerControls';
 import TrackListPlaybackController from './player/TrackListPlaybackController';
 import TrackListActions from './tracks/TrackListActions';
+import AddTracksButton from './tracks/AddTracksButton';
 
 const emitter = new Emitter<PlaybackEmissions, PlaybackEmissions>();
 const driver = new PlaybackDriver(emitter);
@@ -60,6 +61,14 @@ const TrackListPage: React.FC = () => {
     return (
         <>
             <TrackListActions status={status}/>
+            {tracks.length === 0
+                ? <>
+                    <p className="welcome-text">Welcome to Ostia! You don’t have any tracks yet.</p>
+                    <p><AddTracksButton/></p>
+                </>
+                : <p>
+                    <AddTracksButton/>
+                </p>}
             <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={play}/>
             <PlayerControls controller={controller} emitter={emitter} tracks={tracks} currentTrack={currentTrack}/>
         </>

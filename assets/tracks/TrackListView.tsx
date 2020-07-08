@@ -18,6 +18,10 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, sta
         onPlayRequest(track);
     }
 
+    if (tracks.length === 0) {
+        return <></>;
+    }
+
     return (
         <div className="track-list">
             <div className="track-list-items">

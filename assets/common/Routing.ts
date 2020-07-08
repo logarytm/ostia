@@ -3,6 +3,7 @@
 export enum Route {
     AJAX_TRACKS_UPLOAD = '/ajax/tracks/upload',
     TRACKS_REVIEW = '/tracks/review',
+    TRACKS_UPLOAD = '/tracks/upload',
     AJAX_TRACKS_ADD_TO_LIBRARY = '/ajax/tracks/addToLibrary',
     LIBRARY_TRACKS = '/',
     AJAX_TRACKS_STREAM = '/ajax/tracks/{id}/stream',
