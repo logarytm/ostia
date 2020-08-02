@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Empty, Loaded, PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import { Track } from '../tracks/TrackTypes';
 import { Pause, Play, SkipForward, SkipBack } from 'react-feather';
@@ -16,6 +16,14 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
     const [status, setStatus] = useState<PlaybackStatus>(new Empty());
 
     emitter.on('status', (newStatus) => setStatus(newStatus));
+
+    useEffect(() => {
+        document.body.classList.add('player-visible');
+
+        return () => {
+            document.body.classList.remove('player-visible');
+        };
+    });
 
     function handlePlayPause() {
         if (status instanceof Empty) {
@@ -44,9 +52,9 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
     ) + '%';
 
     const isPlayingOrPaused = currentTrack !== null;
-    const isPlaying = status instanceof Loaded && status.paused;
     const hasPrevious = isPlayingOrPaused;
     const hasNext = isPlayingOrPaused;
+    const showPauseAction = status instanceof Loaded && !status.paused;
 
     function handleSliderClick(e: React.MouseEvent<HTMLDivElement>): void {
         if (!isPlayingOrPaused) {
@@ -61,6 +69,14 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
         controller.seek(position);
     }
 
+    function handleSliderMouseMove(e: React.MouseEvent<HTMLDivElement>): void {
+        if (isPlayingOrPaused) {
+            return;
+        }
+
+        //
+    }
+
     return (
         <div className="player">
             <div className="player-wrap">
@@ -69,14 +85,10 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
                             disabled={!hasPrevious}>
                         <SkipBack/>
                     </button>
-                    <button type="button" className="player-button player-button-play-pause"
-                            disabled={!isPlayingOrPaused}
-                            onClick={handlePlayPause}>
-                        {(status instanceof Loaded && !status.paused)
-                            ? <Pause/>
-                            : <Play/>
-                        }
-                        <span className="sr-only">{isPlaying ? 'Pause' : 'Play'}</span>
+                    <button type="button" disabled={!isPlayingOrPaused} onClick={handlePlayPause}
+                            className={`focus-outline player-button player-button-play-pause ${(showPauseAction ? 'player-button-pause' : 'player-button-play')}`}>
+                        {showPauseAction ? <Pause/> : <Play/>}
+                        <span className="sr-only">{showPauseAction ? 'Pause' : 'Play'}</span>
                     </button>
                     <button type="button" className="player-button player-button-previous"
                             disabled={!hasNext}>
@@ -87,7 +99,10 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
                     <div className="player-position">
                         {position.toString()}
                     </div>
-                    <div className="player-position-slider" onClick={handleSliderClick}>
+                    <div className="player-position-slider"
+                         onClick={handleSliderClick}
+                         onMouseMove={handleSliderMouseMove}
+                    >
                         <div className="player-position-slider-track" style={{ width: sliderWidth }}/>
                     </div>
                     <div className="player-total-duration">

@@ -74,6 +74,8 @@ export default class TrackListPlaybackController implements PlaybackController {
         if (newPosition.isWithinTotalDuration(status.totalDuration)) {
             this.driver.seek(newPosition);
         }
+
+        return Promise.resolve(true);
     }
 
     private changeCurrentTrack(newTrack: Track | null) {

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Track } from './TrackTypes';
-import { Pause, Play } from 'react-feather';
+import { Clock, Pause, Play } from 'react-feather';
 import { Loaded, PlaybackStatus } from '../player/PlaybackTypes';
 
 type TrackListViewProps = {
@@ -22,47 +22,57 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, sta
         return <></>;
     }
 
+    function renderPlayingIcon(track: Track): ReactNode {
+        if (track.equals(currentTrack)) {
+            return status instanceof Loaded && status.paused
+                ? (
+                    <div className="track-list-item-status-icon">
+                        <Pause stroke="mediumslateblue"/>
+                    </div>
+                )
+                : (
+                    <div className="track-list-item-status-icon">
+                        <Play stroke="mediumslateblue"/>
+                    </div>
+                );
+        }
+
+        return <></>;
+    }
+
+    function renderItem(track: Track, index: number): ReactNode {
+        return (
+            <div className={'track-list-item ' + (track.equals(currentTrack) ? 'track-list-item-playing' : '')}
+                 onDoubleClick={handleDoubleClick} key={track.id}
+                 data-id={track.id}>
+                <div className="track-list-item-status">
+                    <button type="button" className="track-list-item-play-button sr-only focusable"
+                            onClick={() => onPlayRequest(track)}>
+                        Play this song
+                    </button>
+                    <div className="track-list-item-number">
+                        {index + 1}
+                    </div>
+                </div>
+                <div className="track-list-item-info">
+                    <div className="track-list-item-title">
+                        {track.title}
+                    </div>
+                    <div className="track-list-item-duration">
+                        <span className="track-list-item-duration-icon">
+                        <Clock/>
+                        </span>
+                        {track.duration.toString()}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="track-list">
             <div className="track-list-items">
-                {tracks.map((track, index) => (
-                    <div className={'track-list-item ' + (track.equals(currentTrack) ? 'track-list-item-playing' : '')}
-                         onDoubleClick={handleDoubleClick} key={track.id}
-                         data-id={track.id}>
-                        <div className="track-list-item-status">
-                            <button type="button" className="track-list-item-play-button sr-only focusable">
-                                Play this song
-                            </button>
-                            {track.equals(currentTrack)
-                                ? (
-                                    (status as Loaded).paused
-                                        ? (
-                                            <div className="track-list-item-status-icon">
-                                                <Pause stroke="mediumslateblue"/>
-                                            </div>
-                                        )
-                                        : (
-                                            <div className="track-list-item-status-icon">
-                                                <Play stroke="mediumslateblue"/>
-                                            </div>
-                                        )
-                                )
-                                : (
-                                    <div className="track-list-item-number">
-                                        {index + 1}
-                                    </div>
-                                )}
-                        </div>
-                        <div className="track-list-item-info">
-                            <div className="track-list-item-title">
-                                {track.title}
-                            </div>
-                            <div className="track-list-item-duration">
-                                {track.duration.toString()}
-                            </div>
-                        </div>
-                    </div>
-                ))}
+                {tracks.map((track, index) => renderItem(track, index))}
             </div>
         </div>
     );

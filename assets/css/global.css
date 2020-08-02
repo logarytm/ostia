@@ -79,12 +79,14 @@ body, button, input, textarea, select {
 }
 
 .button-icon svg {
-    width: 16px;
     height: 16px;
-    vertical-align: middle;
+    width: 16px;
 
     margin-right: .25rem;
     position: relative;
+    vertical-align: middle;
+
+    line-height: 1;
 }
 
 .button {
@@ -92,8 +94,13 @@ body, button, input, textarea, select {
     border: 1px #999 solid;
     border-radius: 3px;
     color: #111;
-    padding: .5rem .85rem;
+    padding: .4rem 1rem;
     cursor: pointer;
+}
+
+a.button {
+    display: inline-block;
+    text-decoration: none;
 }
 
 input[type=text],
@@ -107,11 +114,12 @@ input[type=search] {
 }
 
 .button:focus,
+.focus-outline:focus,
 input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
 input[type=search]:focus {
-    box-shadow: 0 0 2px 3px rgba(0, 0, 0, .2);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .2);
 }
 
 .button[disabled] {
