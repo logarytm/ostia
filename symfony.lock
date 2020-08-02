@@ -126,27 +126,6 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.4"
     },
-    "league/tactician": {
-        "version": "v1.0.3"
-    },
-    "league/tactician-bundle": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "222c3d39d38378bc6a9790a0b5baf841ba6679b9"
-        },
-        "files": [
-            "config/packages/league_tactician.yaml"
-        ]
-    },
-    "league/tactician-container": {
-        "version": "2.0.0"
-    },
-    "league/tactician-logger": {
-        "version": "v0.10.0"
-    },
     "monolog/monolog": {
         "version": "2.1.0"
     },
@@ -352,9 +331,6 @@
         "version": "v5.0.8"
     },
     "symfony/http-kernel": {
-        "version": "v5.0.8"
-    },
-    "symfony/inflector": {
         "version": "v5.0.8"
     },
     "symfony/intl": {

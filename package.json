@@ -2,10 +2,11 @@
     "devDependencies": {
         "@symfony/webpack-encore": "^0.30.0",
         "core-js": "^3.0.0",
-        "regenerator-runtime": "^0.13.2",
+        "regenerator-runtime": "^0.13.7",
         "ts-loader": "^5.4.5",
-        "typescript": "^3.9.3",
-        "webpack-notifier": "^1.6.0"
+        "typescript": "^3.9.7",
+        "webpack-notifier": "^1.6.0",
+        "lodash": ">=4.17.19"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -16,10 +17,10 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "@babel/preset-react": "^7.10.0",
+        "@babel/preset-react": "^7.10.4",
         "@types/event-kit": "^2.4.0",
-        "@types/jquery": "^3.3.38",
-        "@types/react": "^16.9.35",
+        "@types/jquery": "^3.5.1",
+        "@types/react": "^16.9.44",
         "@types/react-dom": "^16.9.8",
         "event-kit": "^2.5.3",
         "feather-icons": "^4.28.0",
