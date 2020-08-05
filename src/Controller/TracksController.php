@@ -86,7 +86,7 @@ final class TracksController extends AbstractController
             SystemTime::utcNow()
         );
         $this->tracks->add($upload);
-        $bus->dispatch(new PrepareTrackFile($uuid));
+        $bus->dispatch(new PrepareTrackFile($uuid, $uploadedFile->getClientOriginalName()));
 
         return new JsonResponse(['uuid' => $uuid->toString()], 201);
     }

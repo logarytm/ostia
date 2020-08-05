@@ -48,7 +48,7 @@ class Track
     private DateTimeImmutable $dateCreated;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="tracks")
+     * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="tracks", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true)
      */
     private ?Genre $genre;
@@ -198,6 +198,11 @@ class Track
     public function getGenre(): ?Genre
     {
         return $this->genre;
+    }
+
+    public function setGenre(?Genre $genre): void
+    {
+        $this->genre = $genre;
     }
 
     public function addToPlaylist(Playlist $playlist): self
