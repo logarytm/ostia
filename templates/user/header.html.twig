@@ -1,0 +1,5 @@
+<div class="user-header">
+    {% trans with {'%name%': app.user.username} %}Welcome, %name%{% endtrans %}
+    &bull;
+    <a href="{{ url('app_logout') }}">{% trans %}Log out{% endtrans %}</a>
+</div>

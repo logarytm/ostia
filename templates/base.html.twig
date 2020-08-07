@@ -9,6 +9,9 @@
         {% endblock %}
     </head>
     <body>
+        {% if app.user is not null %}
+            {{ include('user/header.html.twig') }}
+        {% endif %}
         {% block body %}{% endblock %}
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}

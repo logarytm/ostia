@@ -7,6 +7,14 @@ body {
     color: #111;
 }
 
+.user-header {
+    color: #6e6e6e;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 0 1rem;
+    text-align: left;
+}
+
 body, button, input, textarea, select {
     font-family: Inter, Helvetica Neue, Helvetica, sans-serif;
     font-size: 1rem;
