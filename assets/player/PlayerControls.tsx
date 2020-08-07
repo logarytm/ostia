@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Empty, Loaded, PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import { Track } from '../tracks/TrackTypes';
 import { Pause, Play, SkipForward, SkipBack } from 'react-feather';
-import '../css/player.css';
 import Duration from '../common/Duration';
+
+import '../css/player.scss';
 
 type PlayerProps = {
     emitter: PlaybackEmitter;

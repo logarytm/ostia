@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
 import { Emitter } from 'event-kit';
 
-import './css/upload.css';
+import './css/upload.scss';
 
 import UploadQueue from './upload/UploadQueue';
 import UploadForm from './upload/UploadForm';

@@ -1,4 +1,4 @@
-import './css/review.css';
+import './css/review.scss';
 import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
 import { ArrowRight, Check, Clock, UploadCloud, X } from 'react-feather';

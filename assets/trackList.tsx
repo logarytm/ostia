@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import './css/trackList.css';
+import './css/trackList.scss';
 import PlaybackDriver from './player/PlaybackDriver';
 import { Emitter } from 'event-kit';
 import { Empty, PlaybackEmissions, PlaybackStatus } from './player/PlaybackTypes';
