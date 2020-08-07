@@ -9,6 +9,7 @@
         "sass-loader": "^8.0.2",
         "ts-loader": "^5.4.5",
         "typescript": "^3.9.7",
+        "webpack-bundle-analyzer": "^3.8.0",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",

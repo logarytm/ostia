@@ -1,3 +1,5 @@
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 var Encore = require('@symfony/webpack-encore');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
@@ -71,7 +73,14 @@ Encore
 
     // uncomment if you use API Platform Admin (composer req api-admin)
     .enableReactPreset()
-    //.addEntry('admin', './assets/js/admin.js')
 ;
 
-module.exports = Encore.getWebpackConfig();
+var config = Encore.getWebpackConfig();
+
+if (process.env.WEBPACK_BUNDLE_ANALYZER) {
+    config.plugins.push(new BundleAnalyzerPlugin({
+        generateStatsFile: true,
+    }));
+}
+
+module.exports = config;
