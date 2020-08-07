@@ -1,38 +1,38 @@
 import React, { ReactNode } from 'react';
 import { UploadedFile, UploadedFileStatus } from './UploadTypes';
 import toReadableSize from './toReadableSize';
-import { Check, Clock, UploadCloud, X } from 'react-feather';
+import Icon, { Icons } from '../common/Icons';
 
 type UploadQueueProps = { queue: UploadedFile[] };
 
 const UploadQueue: React.FC<UploadQueueProps> = ({ queue }) => {
     function buildStatusIcon(status: UploadedFileStatus): ReactNode {
         switch (status) {
-            case UploadedFileStatus.SUCCESS:
-                return (
-                    <span className="upload-queue-status-icon upload-queue-status-icon-success">
-                        <Check color="mediumseagreen"/>
-                    </span>
-                );
-
-            case UploadedFileStatus.ERROR:
-                return (
-                    <span className="upload-queue-status-icon upload-queue-status-icon-error">
-                        <X color="orangered"/>
-                    </span>
-                );
-
             case UploadedFileStatus.PENDING:
                 return (
                     <span className="upload-queue-status-icon upload-queue-status-icon-pending">
-                        <Clock color="darkgray"/>
+                        <Icon icon={Icons.PENDING}/>
                     </span>
                 );
 
             case UploadedFileStatus.STARTED:
                 return (
                     <span className="upload-queue-status-icon upload-queue-status-icon-started">
-                        <UploadCloud color="cornflowerblue"/>
+                        <Icon icon={Icons.SAVING}/>
+                    </span>
+                );
+
+            case UploadedFileStatus.SUCCESS:
+                return (
+                    <span className="upload-queue-status-icon upload-queue-status-icon-success">
+                        <Icon icon={Icons.SUCCESS}/>
+                    </span>
+                );
+
+            case UploadedFileStatus.ERROR:
+                return (
+                    <span className="upload-queue-status-icon upload-queue-status-icon-error">
+                        <Icon icon={Icons.ERROR}/>
                     </span>
                 );
         }

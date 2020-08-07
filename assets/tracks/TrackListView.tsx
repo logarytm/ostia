@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Track } from './TrackTypes';
-import { Clock, Pause, Play } from 'react-feather';
 import { Loaded, PlaybackStatus } from '../player/PlaybackTypes';
+import Icon, { Icons } from '../common/Icons';
 
 type TrackListViewProps = {
     tracks: Track[];
@@ -27,12 +27,12 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, sta
             return status instanceof Loaded && status.paused
                 ? (
                     <div className="track-list-item-status-icon">
-                        <Pause stroke="mediumslateblue"/>
+                        <Icon icon={Icons.PAUSE}/>
                     </div>
                 )
                 : (
                     <div className="track-list-item-status-icon">
-                        <Play stroke="mediumslateblue"/>
+                        <Icon icon={Icons.PLAY}/>
                     </div>
                 );
         }
@@ -60,7 +60,7 @@ const TrackListView: React.FC<TrackListViewProps> = ({ currentTrack, tracks, sta
                     </div>
                     <div className="track-list-item-duration">
                         <span className="track-list-item-duration-icon">
-                        <Clock/>
+                            <Icon icon={Icons.DURATION}/>
                         </span>
                         {track.duration.toString()}
                     </div>

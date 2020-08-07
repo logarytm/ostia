@@ -1,10 +1,10 @@
 import './css/review.scss';
 import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
-import { ArrowRight, Check, Clock, UploadCloud, X } from 'react-feather';
 import { Emitter } from 'event-kit';
 import $ from 'jquery';
 import { generateUrl, Route } from './common/Routing';
+import Icon, { Icons } from './common/Icons';
 
 enum TrackReviewStatus {
     PENDING = 'pending',
@@ -125,7 +125,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
                 <div className="review-proceed">
                     <a className="button" href={generateUrl(Route.LIBRARY_TRACKS)}>
                         <span className="button-icon">
-                            <ArrowRight/>
+                            <Icon icon={Icons.NEXT}/>
                         </span>
                         Go to Library
                     </a>
@@ -137,7 +137,7 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
             <div className="review-proceed">
                 <button className="button" type="button" onClick={() => this.handleProceed()}>
                     <span className="button-icon">
-                        <Check/>
+                        <Icon icon={Icons.FINISH}/>
                         Add to Library
                     </span>
                 </button>
@@ -147,25 +147,17 @@ class ReviewForm extends React.Component<ReviewFormProps, ReviewFormState> {
 
     private renderStatusIcon(status: TrackReviewStatus): ReactNode {
         switch (status) {
-            case TrackReviewStatus.SAVED:
-                return (
-                    <Check color="mediumseagreen"/>
-                );
-
-            case TrackReviewStatus.ERROR:
-                return (
-                    <X color="orangered"/>
-                );
-
             case TrackReviewStatus.PENDING:
-                return (
-                    <Clock color="darkgray"/>
-                );
+                return <Icon icon={Icons.PENDING}/>;
 
             case TrackReviewStatus.SAVING:
-                return (
-                    <UploadCloud color="cornflowerblue"/>
-                );
+                return <Icon icon={Icons.SAVING}/>;
+
+            case TrackReviewStatus.SAVED:
+                return <Icon icon={Icons.SUCCESS}/>;
+
+            case TrackReviewStatus.ERROR:
+                return <Icon icon={Icons.ERROR}/>;
         }
     }
 }

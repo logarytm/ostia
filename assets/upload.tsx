@@ -2,14 +2,14 @@ import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
 import { Emitter } from 'event-kit';
 
-import './css/upload.scss';
-
 import UploadQueue from './upload/UploadQueue';
 import UploadForm from './upload/UploadForm';
 import { UploadedFile, UploadedFileStatus, UploadEmissions, UploadEmitter, UploadProgress } from './upload/UploadTypes';
 import uploadFileToServer from './upload/uploadFileToServer';
-import { ArrowRight } from 'react-feather';
 import { generateUrl, Route } from './common/Routing';
+import Icon, { Icons } from './common/Icons';
+
+import './css/upload.scss';
 
 type UploadViewState = { queue: UploadedFile[] };
 
@@ -93,7 +93,7 @@ class UploadView extends React.Component<{}, UploadViewState> {
                     this.handleProceedClick();
                 }} disabled={!this.canProceed}>
                     <span className="button-icon">
-                        <ArrowRight/>
+                        <Icon icon={Icons.NEXT}/>
                     </span>
                     Next: Tags
                 </button>

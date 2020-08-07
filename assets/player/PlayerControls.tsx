@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Empty, Loaded, PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
 import { Track } from '../tracks/TrackTypes';
-import { Pause, Play, SkipForward, SkipBack } from 'react-feather';
 import Duration from '../common/Duration';
 
 import '../css/player.scss';
+import Icon, { Icons } from '../common/Icons';
 
 type PlayerProps = {
     emitter: PlaybackEmitter;
@@ -56,6 +56,7 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
     const hasPrevious = isPlayingOrPaused;
     const hasNext = isPlayingOrPaused;
     const showPauseAction = status instanceof Loaded && !status.paused;
+    const playPauseIcon = showPauseAction ? Icons.PAUSE : Icons.PLAY;
 
     function handleSliderClick(e: React.MouseEvent<HTMLDivElement>): void {
         if (!isPlayingOrPaused) {
@@ -84,16 +85,16 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
                 <div className="player-controls">
                     <button type="button" className="player-button player-button-previous"
                             disabled={!hasPrevious}>
-                        <SkipBack/>
+                        <Icon icon={Icons.TRACK_PREVIOUS}/>
                     </button>
                     <button type="button" disabled={!isPlayingOrPaused} onClick={handlePlayPause}
                             className={`focus-outline player-button player-button-play-pause ${(showPauseAction ? 'player-button-pause' : 'player-button-play')}`}>
-                        {showPauseAction ? <Pause/> : <Play/>}
+                        <Icon icon={playPauseIcon}/>
                         <span className="sr-only">{showPauseAction ? 'Pause' : 'Play'}</span>
                     </button>
                     <button type="button" className="player-button player-button-previous"
                             disabled={!hasNext}>
-                        <SkipForward/>
+                        <Icon icon={Icons.TRACK_NEXT}/>
                     </button>
                 </div>
                 <div className="player-position-info">
