@@ -2,9 +2,9 @@ import './css/review.scss';
 import React, { ReactNode } from 'react';
 import { render } from 'react-dom';
 import { Emitter } from 'event-kit';
-import $ from 'jquery';
 import { generateUrl, Route } from './common/Routing';
 import Icon, { Icons } from './common/Icons';
+import fetchWithStatusCheck from './common/fetchWithStatusCheck';
 
 enum TrackReviewStatus {
     PENDING = 'pending',
@@ -26,7 +26,7 @@ type TrackToReview = {
 
 declare var __tracksToReview: TrackToReview[];
 
-function addFilesToLibrary(files: TrackToReview[], emitter: ReviewEmitter) {
+async function addFilesToLibrary(files: TrackToReview[], emitter: ReviewEmitter): Promise<void> {
     const file = files.find((file) => file.status === TrackReviewStatus.PENDING);
     if (!file) {
         return;
@@ -35,24 +35,27 @@ function addFilesToLibrary(files: TrackToReview[], emitter: ReviewEmitter) {
     file.status = TrackReviewStatus.SAVING;
     emitter.emit('progress', { file });
 
-    $.ajax({
-        url: generateUrl(Route.AJAX_TRACKS_ADD_TO_LIBRARY),
-        type: 'post',
-        dataType: 'json',
-        data: { id: file.id },
-        complete: () => {
-            addFilesToLibrary(files, emitter);
-        },
-        success: () => {
-            file.status = TrackReviewStatus.SAVED;
-            emitter.emit('progress', { file });
-        },
-        error: (error) => {
-            console.log(error);
-            file.status = TrackReviewStatus.ERROR;
-            emitter.emit('progress', { file });
-        },
-    });
+    const payload = { id: file.id };
+
+    try {
+        await fetchWithStatusCheck(generateUrl(Route.AJAX_TRACKS_ADD_TO_LIBRARY), {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(payload),
+        });
+
+        file.status = TrackReviewStatus.SAVED;
+        emitter.emit('progress', { file });
+    } catch (error) {
+        console.error(error);
+        file.status = TrackReviewStatus.ERROR;
+        emitter.emit('progress', { file });
+    }
+
+    return addFilesToLibrary(files, emitter);
 }
 
 type ReviewEmissions = {

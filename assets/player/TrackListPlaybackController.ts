@@ -1,10 +1,10 @@
-import { Loaded, PlaybackController, PlaybackEmitter, PlaybackStatus } from './PlaybackTypes';
+import { Loaded, PlaybackController, PlaybackEmitter } from './PlaybackTypes';
 import PlaybackDriver from './PlaybackDriver';
 import { Track } from '../tracks/TrackTypes';
 import { generateUrl, Route } from '../common/Routing';
 import { DisposableLike } from 'event-kit';
-import $ from 'jquery';
 import Duration from '../common/Duration';
+import fetchWithStatusCheck from '../common/fetchWithStatusCheck';
 
 export default class TrackListPlaybackController implements PlaybackController {
     private currentTrack: Track | null;
@@ -15,29 +15,39 @@ export default class TrackListPlaybackController implements PlaybackController {
         private readonly driver: PlaybackDriver,
         private readonly tracks: Track[],
     ) {
-        this.subscription = emitter.on('trackEnd', () => {
-            if (this.currentTrack !== null) {
-                const nextTrackIndex = this.currentTrack.index + 1;
-                if (nextTrackIndex < tracks.length) {
-                    this.play(tracks[nextTrackIndex]);
-                } else {
-                    this.changeCurrentTrack(null);
-                }
-            }
-        });
+        this.subscription = emitter.on('trackEnd', this.handleTrackEnd.bind(this));
     }
 
-    public play(track: Track) {
+    public async handleTrackEnd(): Promise<void> {
+        if (this.currentTrack === null) {
+            return;
+        }
+
+        const nextTrackIndex = this.currentTrack.index + 1;
+        const hasNextTrack = nextTrackIndex < this.tracks.length;
+
+        if (hasNextTrack) {
+            await this.play(this.tracks[nextTrackIndex]);
+        } else {
+            this.changeCurrentTrack(null);
+        }
+    }
+
+    public async play(track: Track): Promise<boolean> {
         // TODO: extract this request and possibly cache results
-        $.ajax({
-            url: generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }),
-            type: 'get',
-            dataType: 'json',
-            success: (data) => {
-                this.changeCurrentTrack(track);
-                this.driver.play(data.preferred);
-            },
+        const response = await fetchWithStatusCheck(generateUrl(Route.AJAX_TRACKS_STREAM, { id: track.id }), {
+            method: 'GET',
+            headers: new Headers({
+                'Accept': 'application/json',
+            }),
         });
+
+        const streamInfo = await response.json();
+
+        this.changeCurrentTrack(track);
+        this.driver.play(streamInfo.preferred);
+
+        return true;
     }
 
     public resume(): Promise<boolean> {
@@ -79,8 +89,9 @@ export default class TrackListPlaybackController implements PlaybackController {
     }
 
     private changeCurrentTrack(newTrack: Track | null) {
-        const shouldPublish = newTrack != this.currentTrack;
+        const shouldPublish = newTrack !== this.currentTrack;
         this.currentTrack = newTrack;
+
         if (shouldPublish) {
             this.publishTrackChange();
         }
