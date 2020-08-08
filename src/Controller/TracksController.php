@@ -96,7 +96,8 @@ final class TracksController extends AbstractController
      */
     public function reviewAction(Request $request): Response
     {
-        $uuids = $this->getUuidsFromQuery($request);
+        $uuids = (array)$request->get('uuids');
+        $uuids = array_map([Uuid::class, 'fromString'], $uuids);
         $tracksToReview = $this->tracks->getTracksToReview(...$uuids);
 
         return $this->render('tracks/review.html.twig', [
@@ -161,14 +162,5 @@ final class TracksController extends AbstractController
         return new JsonResponse([
             'preferred' => $this->storage->getUrl(Catalogs::TRACKS, Uuid::fromString($id)),
         ]);
-    }
-
-    private function getUuidsFromQuery(Request $request): array
-    {
-        $uuids = explode(',', $request->query->get('uuids'));
-        $uuids = array_map('trim', $uuids);
-        $uuids = array_map([Uuid::class, 'fromString'], $uuids);
-
-        return $uuids;
     }
 }

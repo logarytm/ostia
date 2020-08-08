@@ -9,39 +9,51 @@ export enum Route {
     AJAX_TRACKS_STREAM = '/ajax/tracks/{id}/stream',
 }
 
-type RouteParameters = {
-    [key: string]: string | number | boolean;
+type RouteParameterValue = string | string[] | number | number[] | boolean | boolean[];
+type RouteParameterSet = {
+    [key: string]: RouteParameterValue;
 };
 
-export function generateUrl(route: Route, parameters: RouteParameters = {}) {
-    const parameterOccursInRoute: { [key: string]: boolean } = {};
+export function generateUrl(route: Route, parameters: RouteParameterSet = {}) {
+    const parameterIsPartOfPath: { [key: string]: boolean } = {};
+    const queryStringComponents: [string, string][] = [];
 
-    function encodeParameterValue(key: string): string {
-        const value = parameters[key];
-
+    function encodePathComponent(value: RouteParameterValue): string {
         return encodeURIComponent(String(value));
     }
 
-    function replaceRoutePlaceholder(_match: string, parameterKey: string): string {
-        parameterOccursInRoute[parameterKey] = true;
+    function addQueryComponentsForParameter(parameter: string, value: RouteParameterValue): void {
+        if (!Array.isArray(value)) {
+            queryStringComponents.push([parameter, String(value)]);
 
-        return encodeParameterValue(parameterKey);
+            return;
+        }
+
+        for (const item of value) {
+            queryStringComponents.push([`${parameter}[]`, String(item)]);
+        }
     }
 
+    function replaceRoutePlaceholder(match: string, parameter: string): string {
+        parameterIsPartOfPath[parameter] = true;
+
+        return encodePathComponent(parameters[parameter]);
+    }
+
+    // NOTE: this does not implement the full Symfony route placeholder syntax.
     let url = route.replace(/[{]([a-zA-Z0-9_]+)[}]/g, replaceRoutePlaceholder);
     let hasQueryString = false;
-    const queryStringComponents: { [key: string]: string } = {};
 
-    for (const parameterKey of Object.keys(parameters)) {
-        if (!parameterOccursInRoute.hasOwnProperty(parameterKey)) {
-            queryStringComponents[parameterKey] = encodeParameterValue(parameterKey);
+    for (const parameter of Object.keys(parameters)) {
+        if (!parameterIsPartOfPath.hasOwnProperty(parameter)) {
+            addQueryComponentsForParameter(parameter, parameters[parameter]);
             hasQueryString = true;
         }
     }
 
     if (hasQueryString) {
-        url += '?' + Object.entries(queryStringComponents)
-            .map(([key, value]) => encodeURIComponent(key) + '=' + value)
+        url += '?' + queryStringComponents
+            .map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value))
             .join('&');
     }
 
