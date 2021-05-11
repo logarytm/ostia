@@ -6,7 +6,7 @@
         "ts-loader": "^5.4.5",
         "typescript": "^3.9.7",
         "webpack-notifier": "^1.6.0",
-        "lodash": ">=4.17.19"
+        "lodash": ">=4.17.21"
     },
     "license": "UNLICENSED",
     "private": true,
