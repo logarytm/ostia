@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="users")
  * @UniqueEntity(fields={"username"}, message="There is already an account with this username")
  */
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id()
@@ -67,9 +68,20 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @deprecated Since Symfony 5.3.0 but lack of this method confuses some tooling.
+     * @todo Remove once we upgrade to Symfony 6.x
+     */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     public function setUsername(string $username): self
