@@ -62,7 +62,13 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
         }
 
         // We have to use e.target.
-        const slider = e.target as HTMLDivElement;
+        // Additionally, if user is clicking on the part that's hovered by the slider track (part of the
+        // song that was played so far) we have to refer to its parent to access the real slider element.
+        let slider = e.target as HTMLDivElement;
+        if (slider.classList.contains('player-position-slider-track')) {
+            slider = slider.parentElement as HTMLDivElement;
+        }
+
         const relativePosition = (e.pageX - slider.offsetLeft) / slider.offsetWidth;
         const position = totalDuration.fraction(relativePosition);
 
