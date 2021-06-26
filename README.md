@@ -58,6 +58,9 @@ php bin/console doctrine:migrations:migrate
 
 You can now visit http://127.0.0.1:8000 and create your user account.
 
+You can use `npm run dev-server` instead of `npm run build` if you wish
+to work on the frontend. The server will be exposed on port `8080`.
+
 ### Using your own host and PHP's built-in dev server
 
 > **Note:** When using PHP's built-in server you will be unable to rewind the songs

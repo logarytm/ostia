@@ -5,6 +5,8 @@ services:
         build:
             context: .
             dockerfile: docker/app/Dockerfile
+        ports:
+            - "8080:8080"
         volumes:
             - .:/var/www
             - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
