@@ -51,7 +51,7 @@ commands:
 
 ```bash
 composer install
-npm install
+npm ci
 npm run build
 php bin/console doctrine:migrations:migrate
 ```
@@ -72,7 +72,7 @@ in `.env`).
 
 ```sh
 composer install
-npm install
+npm ci
 npm run build
 php bin/console doctrine:migrations:migrate
 bin/server # or php -S 127.0.0.1:8000 -t public/ on Windows
