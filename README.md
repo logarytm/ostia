@@ -30,6 +30,41 @@ the user navigates to a different page.
 
 ## How to run it
 
+### Using Docker
+Using Docker is recommended way to run the local development environment. Run
+`docker-compose up -d` from the main directory to set up the containers.
+
+By default, Ostia exposes the webserver on port `8000` and MySQL on `3309`. Please
+make sure that these are not taken on your machine. Otherwise, you will have to
+use `docker-compose.override.yml` to change the ports.
+
+Once the containers are running, please create following `.env.local` file to
+match the configuration:
+
+```
+DATABASE_URL=mysql://root:secret@db:3306/ostia?serverVersion=5.7
+REGISTRATION_ENABLED=true
+```
+
+Then simply enter the containers (`docker-compose exec app bash`) and run following
+commands:
+
+```bash
+composer install
+npm install
+npm run build
+php bin/console doctrine:migrations:migrate
+```
+
+You can now visit http://127.0.0.1:8000 and create your user account.
+
+### Using your own host and PHP's built-in dev server
+
+> **Note:** When using PHP's built-in server you will be unable to rewind the songs
+> due to the fact that it's missing support for some HTTP headers. If you wish to
+> use that functionallity locally consider following Docker instructions above or
+> setting up production-grade server (like nginx or Apache) on your host machine.
+
 You need to have `ffmpeg` and `ffprobe` installed in your PATH.
 
 First, create an `.env.local` file and set a proper `DATABASE_URL` (template is

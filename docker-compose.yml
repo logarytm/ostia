@@ -1,16 +1,32 @@
 version: "2"
+
 services:
-    php:
-        build: docker/php
-        environment:
-            - LOGS_DIR=/data/logs
+    app:
+        build:
+            context: .
+            dockerfile: docker/app/Dockerfile
         volumes:
-            - .:/data/app
-    nginx:
-        build: docker/nginx
+            - .:/var/www
+            - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+    web:
+        image: nginx:alpine
         ports:
-            - "8080:80"
+            - "8000:80"
         volumes:
-            - .:/data/app
-        links:
-            - php
+            - .:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
+
+    db:
+        image: mysql:5.7
+        ports:
+            - "3309:3306"
+        environment:
+            MYSQL_DATABASE: ostia
+            MYSQL_ROOT_PASSWORD: secret
+        volumes:
+            - data-mysql:/var/lib/mysql
+
+volumes:
+    data-mysql:
+        driver: local
