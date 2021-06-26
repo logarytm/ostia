@@ -80,8 +80,7 @@ class UploadView extends React.Component<{}, UploadViewState> {
     private handleProceedClick(): void {
         const uuids = this.state.queue
             .filter((track) => track.status === UploadedFileStatus.SUCCESS)
-            .map((track) => track.uuid!)
-            .join(',');
+            .map((track) => track.uuid!);
 
         window.location.replace(generateUrl(Route.TRACKS_REVIEW, { uuids }));
     }

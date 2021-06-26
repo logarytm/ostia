@@ -25,4 +25,8 @@ class GenreRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
+    public function getByName(string $name): ?Genre
+    {
+        return $this->findOneBy(['name' => $name]);
+    }
 }
