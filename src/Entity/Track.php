@@ -89,7 +89,7 @@ class Track
         ?int $trackNo,
         int $ordering,
         DateTimeImmutable $dateCreated
-    ) {
+    ): self {
         return new self(
             $id,
             $user,
@@ -110,7 +110,7 @@ class Track
         string $title,
         int $ordering,
         DateTimeImmutable $dateCreated
-    ) {
+    ): self {
         return new self(
             $id,
             $user,
