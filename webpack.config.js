@@ -26,6 +26,7 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/global.ts')
+    .addEntry('router', './assets/router.tsx')
     .addEntry('upload', './assets/upload.tsx')
     .addEntry('review', './assets/review.tsx')
     .addEntry('track_list', './assets/trackList.tsx')

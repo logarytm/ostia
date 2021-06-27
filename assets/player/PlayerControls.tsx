@@ -80,7 +80,7 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
     }
 
     return (
-        <div className="player">
+        <div className="player" id="persistent-root" data-turbolinks-permanent={true}>
             <div className="player-wrap">
                 <div className="player-controls">
                     <button type="button" className="player-button player-button-previous"
