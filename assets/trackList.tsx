@@ -5,7 +5,6 @@ import PlaybackDriver from './player/PlaybackDriver';
 import { Emitter } from 'event-kit';
 import { Empty, PlaybackEmissions, PlaybackStatus } from './player/PlaybackTypes';
 import Duration, { DurationData } from './common/Duration';
-import { render } from 'react-dom';
 import TrackListView from './tracks/TrackListView';
 import { Track } from './tracks/TrackTypes';
 import PlayerControls from './player/PlayerControls';
@@ -33,7 +32,7 @@ const tracksFromServer: Track[] = __tracks.map((trackData, index) => new Track(
 
 const controller = new TrackListPlaybackController(emitter, driver, tracksFromServer);
 
-const TrackListPage: React.FC = () => {
+export default function TrackList() {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
     const [tracks] = React.useState<Track[]>(tracksFromServer);
     const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
@@ -74,8 +73,3 @@ const TrackListPage: React.FC = () => {
         </>
     );
 };
-
-render(
-    <TrackListPage/>,
-    document.querySelector('#track-list-holder'),
-);

@@ -1,8 +1,20 @@
 {% extends 'base.html.twig' %}
+
 {% block body %}
     <div id="react-content"></div>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('router') }}
+{% endblock %}
+
 {% block javascripts %}
+    {{ parent() }}
+    <script>
+        {% autoescape 'js' %}
+        window.__tracks = {{ tracks_json|raw }};
+        {% endautoescape %}
+    </script>
     {{ encore_entry_script_tags('router') }}
 {% endblock %}
