@@ -9,21 +9,17 @@ use App\Entity\Track;
 use App\Metadata\Metadata;
 use App\Repository\GenreRepository;
 use App\Repository\TrackRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Ramsey\Uuid\Uuid;
 
 class TrackManager
 {
-    private EntityManagerInterface $entityManager;
     private GenreRepository $genreRepository;
     private TrackRepository $trackRepository;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
         GenreRepository $genreRepository,
         TrackRepository $trackRepository
     ) {
-        $this->entityManager = $entityManager;
         $this->genreRepository = $genreRepository;
         $this->trackRepository = $trackRepository;
     }
@@ -38,8 +34,7 @@ class TrackManager
             $track->setGenre($this->genreRepository->getByName($genreName) ?? new Genre(Uuid::uuid4(), $genreName));
         }
 
-        $this->entityManager->persist($track);
-        $this->entityManager->flush();
+        $this->trackRepository->save($track);
 
         return $track;
     }
