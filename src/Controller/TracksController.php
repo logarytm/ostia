@@ -85,7 +85,7 @@ final class TracksController extends AbstractController
             $this->tracks->getEndPosition($this->user(), Track::STATUS_UPLOADED),
             SystemTime::utcNow()
         );
-        $this->tracks->add($upload);
+        $this->tracks->save($upload);
         $bus->dispatch(new PrepareTrackFile($uuid, $uploadedFile->getClientOriginalName()));
 
         return new JsonResponse(['uuid' => $uuid->toString()], 201);
@@ -128,7 +128,7 @@ final class TracksController extends AbstractController
             $album = new Album(Uuid::uuid4(), null);
             $album->addArtist($albumArtist);
 
-            $this->albums->add($album);
+            $this->albums->save($album);
         }
 
         $track = Track::create(
@@ -142,7 +142,7 @@ final class TracksController extends AbstractController
             $this->tracks->getEndPosition($this->user(), Track::STATUS_REVIEWED),
             SystemTime::utcNow(),
         );
-        $this->tracks->add($track);
+        $this->tracks->save($track);
 
         try {
             $this->storage->saveToPersistentStorage($track, $upload);

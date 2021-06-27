@@ -36,7 +36,7 @@ class TrackRepository extends ServiceEntityRepository
         return new TrackList(...$items);
     }
 
-    public function add(Track $track): void
+    public function save(Track $track): void
     {
         $this->_em->persist($track);
         $this->_em->flush();

@@ -19,7 +19,7 @@ class ArtistRepository extends ServiceEntityRepository
         parent::__construct($registry, Artist::class);
     }
 
-    public function add(Artist $artist): void
+    public function save(Artist $artist): void
     {
         $this->_em->persist($artist);
         $this->_em->flush();
