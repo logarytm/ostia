@@ -5,18 +5,40 @@ import Duration from '../common/Duration';
 
 import '../css/player.scss';
 import Icon, { Icons } from '../common/Icons';
+import useDisposableEffect from '../common/useDisposableEffect';
 
 type PlayerProps = {
-    emitter: PlaybackEmitter;
     controller: PlaybackController;
+};
+
+type PlayerState = {
     tracks: Track[];
     currentTrack: Track | null;
 };
 
-const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitter }) => {
+const Player: React.FC<PlayerProps> = ({ controller }) => {
+    const emitter = controller.getEmitter();
     const [status, setStatus] = useState<PlaybackStatus>(new Empty());
+    const [state, setState] = useState<PlayerState>({
+        tracks: [],
+        currentTrack: null,
+    });
 
-    emitter.on('status', (newStatus) => setStatus(newStatus));
+    function handleStatus(status: PlaybackStatus) {
+        setStatus(status);
+    }
+
+    function handleTrackChange(track: Track | null) {
+        setState({ ...state, currentTrack: track });
+    }
+
+    useDisposableEffect(() => {
+        return emitter.on('status', handleStatus);
+    }, [handleStatus]);
+
+    useDisposableEffect(() => {
+        return emitter.on('trackChange', handleTrackChange);
+    }, [handleStatus]);
 
     useEffect(() => {
         document.body.classList.add('player-visible');
@@ -52,7 +74,7 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
             : 0
     ) + '%';
 
-    const isPlayingOrPaused = currentTrack !== null;
+    const isPlayingOrPaused = state.currentTrack !== null;
     const hasPrevious = isPlayingOrPaused;
     const hasNext = isPlayingOrPaused;
     const showPauseAction = status instanceof Loaded && !status.paused;
@@ -116,4 +138,4 @@ const PlayerControls: React.FC<PlayerProps> = ({ currentTrack, controller, emitt
     );
 };
 
-export default PlayerControls;
+export default Player;

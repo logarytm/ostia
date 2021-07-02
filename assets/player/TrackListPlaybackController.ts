@@ -88,6 +88,14 @@ export default class TrackListPlaybackController implements PlaybackController {
         return Promise.resolve(true);
     }
 
+    public getTracks(): Track[] {
+        return this.tracks;
+    }
+
+    public getEmitter(): PlaybackEmitter {
+        return this.emitter;
+    }
+
     private changeCurrentTrack(newTrack: Track | null) {
         const shouldPublish = newTrack !== this.currentTrack;
         this.currentTrack = newTrack;

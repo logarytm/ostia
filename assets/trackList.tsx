@@ -1,48 +1,23 @@
 import React, { useEffect } from 'react';
 
 import './css/trackList.scss';
-import PlaybackDriver from './player/PlaybackDriver';
-import { Emitter } from 'event-kit';
-import { Empty, PlaybackEmissions, PlaybackStatus } from './player/PlaybackTypes';
-import Duration, { DurationData } from './common/Duration';
+import { Empty, PlaybackController, PlaybackStatus } from './player/PlaybackTypes';
 import TrackListView from './tracks/TrackListView';
 import { Track } from './tracks/TrackTypes';
-import PlayerControls from './player/PlayerControls';
-import TrackListPlaybackController from './player/TrackListPlaybackController';
 import TrackListActions from './tracks/TrackListActions';
 import AddTracksButton from './tracks/AddTracksButton';
 
-const emitter = new Emitter<PlaybackEmissions, PlaybackEmissions>();
-const driver = new PlaybackDriver(emitter);
-
-type TrackData = {
-    id: string;
-    title: string;
-    duration: DurationData;
-}
-
-declare var __tracks: TrackData[];
-
-const tracksFromServer: Track[] = __tracks.map((trackData, index) => new Track(
-    trackData.id,
-    index,
-    trackData.title,
-    Duration.fromSeconds(trackData.duration.totalSeconds),
-));
-
-const controller = new TrackListPlaybackController(emitter, driver, tracksFromServer);
-
-export default function TrackList() {
+export default function TrackList({ controller }: { controller: PlaybackController }) {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
-    const [tracks] = React.useState<Track[]>(tracksFromServer);
+    const [tracks] = React.useState<Track[]>(controller.getTracks());
     const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
 
     useEffect(() => {
-        const trackChangeSubscription = emitter.on('trackChange', (track: Track) => {
+        const trackChangeSubscription = controller.getEmitter().on('trackChange', (track: Track) => {
             setCurrentTrack(track);
         });
 
-        const statusSubscription = emitter.on('status', (status: PlaybackStatus) => {
+        const statusSubscription = controller.getEmitter().on('status', (status: PlaybackStatus) => {
             setStatus(status);
         });
 
@@ -69,7 +44,6 @@ export default function TrackList() {
                     <AddTracksButton/>
                 </p>}
             <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={play}/>
-            <PlayerControls controller={controller} emitter={emitter} tracks={tracks} currentTrack={currentTrack}/>
         </>
     );
 };

@@ -27,9 +27,12 @@ export type PlaybackEmissions = {
 export type PlaybackEmitter = Emitter<PlaybackEmissions, PlaybackEmissions>;
 
 export type PlaybackController = {
+    play(track: Track): Promise<boolean>;
     resume(): Promise<boolean>;
     pause(): Promise<boolean>;
     previous(): Promise<boolean>;
     next(): Promise<boolean>;
     seek(position: Duration): Promise<boolean>;
+    getTracks(): Track[];
+    getEmitter(): PlaybackEmitter;
 };
