@@ -86,7 +86,7 @@ const Player: React.FC<PlayerProps> = ({ controller }) => {
         }
 
         // We have to use e.target.
-        const slider = e.target as HTMLDivElement;
+        const slider = (e.target as HTMLDivElement).closest<HTMLDivElement>('.player-position-slider');
         const relativePosition = (e.pageX - slider.offsetLeft) / slider.offsetWidth;
         const position = totalDuration.fraction(relativePosition);
 
