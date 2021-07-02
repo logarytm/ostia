@@ -20,7 +20,7 @@ export default function App() {
             <nav className="navbar navbar-light">
                 <ul className="nav navbar-nav">
                     <li>
-                        <Link to="/app">Home</Link>
+                        <Link to="/">Home</Link>
                     </li>
                     <li>
                         <Link to="/category">Category</Link>
@@ -32,7 +32,7 @@ export default function App() {
             </nav>
 
             <Switch>
-                <Route exact path="/app"><Home /></Route>
+                <Route exact path="/"><Home /></Route>
                 <Route path="/category"><Category /></Route>
                 <Route path="/products"><Products /></Route>
             </Switch>

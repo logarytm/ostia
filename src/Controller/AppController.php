@@ -19,7 +19,7 @@ final class AppController extends AbstractController
     }
 
     /**
-     * @Route("/app")
+     * @Route("/{path}", priority=-100, requirements={"path": ".*"})
      */
     public function index(SerializerInterface $serializer): Response
     {
