@@ -13,7 +13,7 @@ export default class TrackListPlaybackController implements PlaybackController {
     public constructor(
         private readonly emitter: PlaybackEmitter,
         private readonly driver: PlaybackDriver,
-        private readonly tracks: Track[],
+        private tracks: Track[],
     ) {
         this.subscription = emitter.on('trackEnd', this.handleTrackEnd.bind(this));
     }
@@ -86,6 +86,14 @@ export default class TrackListPlaybackController implements PlaybackController {
         }
 
         return Promise.resolve(true);
+    }
+
+    public async replaceTracks(tracks: Track[]): Promise<boolean> {
+        this.tracks = tracks;
+        this.emitter.emit('trackListChange', tracks);
+        this.changeCurrentTrack(null);
+
+        return true;
     }
 
     public getTracks(): Track[] {

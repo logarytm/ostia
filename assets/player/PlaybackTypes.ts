@@ -22,6 +22,7 @@ export type PlaybackEmissions = {
     status: PlaybackStatus;
     trackEnd: PlaybackStatus;
     trackChange: Track | null;
+    trackListChange: Track[];
 };
 
 export type PlaybackEmitter = Emitter<PlaybackEmissions, PlaybackEmissions>;
@@ -33,6 +34,7 @@ export type PlaybackController = {
     previous(): Promise<boolean>;
     next(): Promise<boolean>;
     seek(position: Duration): Promise<boolean>;
+    replaceTracks(track: Track[]): Promise<boolean>;
     getTracks(): Track[];
     getEmitter(): PlaybackEmitter;
 };

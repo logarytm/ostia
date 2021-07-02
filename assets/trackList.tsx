@@ -11,12 +11,16 @@ import { DisposablePool } from './common/DisposablePool';
 
 export default function TrackList({ controller }: { controller: PlaybackController }) {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
-    const [tracks] = React.useState<Track[]>(controller.getTracks());
+    const [tracks, setTracks] = React.useState<Track[]>(controller.getTracks());
     const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
 
     useDisposableEffect(() => {
         const trackChangeSubscription = controller.getEmitter().on('trackChange', (track: Track) => {
             setCurrentTrack(track);
+        });
+
+        const trackListChangeSubscription = controller.getEmitter().on('trackListChange', (tracks: Track[]) => {
+            setTracks(tracks);
         });
 
         const statusSubscription = controller.getEmitter().on('status', (status: PlaybackStatus) => {
@@ -25,6 +29,7 @@ export default function TrackList({ controller }: { controller: PlaybackControll
 
         return new DisposablePool([
             trackChangeSubscription,
+            trackListChangeSubscription,
             statusSubscription,
         ]);
     });
