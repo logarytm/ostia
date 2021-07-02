@@ -201,4 +201,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function equals(User $user): bool
+    {
+        return $this->id === $user->id;
+    }
 }
