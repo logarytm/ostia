@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import './css/trackList.scss';
 import { Empty, PlaybackController, PlaybackStatus } from './player/PlaybackTypes';
@@ -6,13 +6,15 @@ import TrackListView from './tracks/TrackListView';
 import { Track } from './tracks/TrackTypes';
 import TrackListActions from './tracks/TrackListActions';
 import AddTracksButton from './tracks/AddTracksButton';
+import useDisposableEffect from './common/useDisposableEffect';
+import { DisposablePool } from './common/DisposablePool';
 
 export default function TrackList({ controller }: { controller: PlaybackController }) {
     const [currentTrack, setCurrentTrack] = React.useState<Track | null>(null);
     const [tracks] = React.useState<Track[]>(controller.getTracks());
     const [status, setStatus] = React.useState<PlaybackStatus>(new Empty());
 
-    useEffect(() => {
+    useDisposableEffect(() => {
         const trackChangeSubscription = controller.getEmitter().on('trackChange', (track: Track) => {
             setCurrentTrack(track);
         });
@@ -21,11 +23,10 @@ export default function TrackList({ controller }: { controller: PlaybackControll
             setStatus(status);
         });
 
-        // TODO: introduce a helper to merge subscriptions
-        return () => {
-            trackChangeSubscription.dispose();
-            statusSubscription.dispose();
-        };
+        return new DisposablePool([
+            trackChangeSubscription,
+            statusSubscription,
+        ]);
     });
 
     function play(track: Track): void {

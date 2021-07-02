@@ -6,6 +6,7 @@ import Duration from '../common/Duration';
 import '../css/player.scss';
 import Icon, { Icons } from '../common/Icons';
 import useDisposableEffect from '../common/useDisposableEffect';
+import { DisposablePool } from '../common/DisposablePool';
 
 type PlayerProps = {
     controller: PlaybackController;
@@ -33,12 +34,11 @@ const Player: React.FC<PlayerProps> = ({ controller }) => {
     }
 
     useDisposableEffect(() => {
-        return emitter.on('status', handleStatus);
-    }, [handleStatus]);
-
-    useDisposableEffect(() => {
-        return emitter.on('trackChange', handleTrackChange);
-    }, [handleStatus]);
+        return new DisposablePool([
+            emitter.on('status', handleStatus),
+            emitter.on('trackChange', handleTrackChange),
+        ]);
+    });
 
     useEffect(() => {
         document.body.classList.add('player-visible');
