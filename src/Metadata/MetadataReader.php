@@ -6,15 +6,23 @@ namespace App\Metadata;
 
 use App\Entity\Duration;
 use FFMpeg\FFProbe;
+use FFMpeg\FFProbe\DataMapping\AbstractData;
 use SplFileInfo;
+use Symfony\Component\Mime\MimeTypesInterface;
 
 class MetadataReader
 {
-    private FFProbe $ffprobe;
+    private const MIME_MPEG = 'audio/mpeg';
 
-    public function __construct()
+    private FFProbe $ffprobe;
+    private MimeTypesInterface $mimeTypes;
+    private NativeMP3DurationReader $nativeDurationReader;
+
+    public function __construct(MimeTypesInterface $mimeTypes, NativeMP3DurationReader $nativeDurationReader)
     {
         $this->ffprobe = FFProbe::create();
+        $this->mimeTypes = $mimeTypes;
+        $this->nativeDurationReader = $nativeDurationReader;
     }
 
     public function readMetadata(string $filePath, string $originalFilename): Metadata
@@ -24,7 +32,7 @@ class MetadataReader
 
         return new Metadata(
             $this->determineTitle($tags, $originalFilename),
-            Duration::fromSeconds((int) $metadata->get('duration')),
+            Duration::fromSeconds($this->determineDuration($filePath, $metadata)),
             $tags['genre'] ?? null,
         );
     }
@@ -38,5 +46,19 @@ class MetadataReader
         $fileInfo = new SplFileInfo($originalFilename);
 
         return $fileInfo->getBasename('.' . $fileInfo->getExtension());
+    }
+
+    private function determineDuration(string $filePath, AbstractData $metadata): int
+    {
+        if ($metadata->get('duration') !== null) {
+            return (int) $metadata->get('duration');
+        }
+
+        $mimeType = $this->mimeTypes->guessMimeType($filePath);
+        if ($mimeType === self::MIME_MPEG) {
+            return $this->nativeDurationReader->getDuration($filePath);
+        }
+
+        return 0;
     }
 }
