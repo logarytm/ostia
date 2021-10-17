@@ -23,7 +23,7 @@ final class LibraryController extends AbstractController
     }
 
     /**
-     * @Route("/tracks")
+     * @Route("/noscript/tracks")
      */
     public function tracks(SerializerInterface $serializer): Response
     {
