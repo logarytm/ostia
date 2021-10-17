@@ -23,6 +23,8 @@ final class AppController extends AbstractController
      */
     public function index(SerializerInterface $serializer): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $tracks = $this->tracks->all($this->user());
 
         return $this->render('app.html.twig', [
