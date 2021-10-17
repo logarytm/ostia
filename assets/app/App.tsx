@@ -42,7 +42,7 @@ const controller = new TrackListPlaybackController(emitter, driver, tracksFromSe
 
 export default function App() {
     return (
-        <>
+        <div className="wrap">
             <nav className="navbar navbar-light">
                 <ul className="nav navbar-nav">
                     <li>
@@ -64,6 +64,6 @@ export default function App() {
             </Switch>
 
             <Player controller={controller}/>
-        </>
+        </div>
     );
 }

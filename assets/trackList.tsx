@@ -39,7 +39,7 @@ export default function TrackList({ controller }: { controller: PlaybackControll
     }
 
     return (
-        <>
+        <div className="wrap">
             <TrackListActions status={status}/>
             {tracks.length === 0
                 ? <>
@@ -50,6 +50,6 @@ export default function TrackList({ controller }: { controller: PlaybackControll
                     <AddTracksButton/>
                 </p>}
             <TrackListView currentTrack={currentTrack} tracks={tracks} status={status} onPlayRequest={play}/>
-        </>
+        </div>
     );
 };
